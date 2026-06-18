@@ -148,6 +148,9 @@ CREATE POLICY "Anyone can vote" ON public.votes
 CREATE POLICY "Users can delete their own votes" ON public.votes
     FOR DELETE USING (auth.uid() = user_id);
 
+CREATE POLICY "Anonymous users can delete their own votes" ON public.votes
+    FOR DELETE USING (voter_fingerprint IS NOT NULL AND user_id IS NULL);
+
 -- ===========================================
 -- INDEXES
 -- ===========================================
@@ -159,6 +162,7 @@ CREATE INDEX idx_poll_options_poll_id ON public.poll_options(poll_id);
 CREATE INDEX idx_votes_poll_id ON public.votes(poll_id);
 CREATE INDEX idx_votes_option_id ON public.votes(option_id);
 CREATE INDEX idx_votes_user_id ON public.votes(user_id);
+CREATE INDEX idx_votes_voter_fingerprint ON public.votes(voter_fingerprint);
 
 -- ===========================================
 -- FUNCTIONS

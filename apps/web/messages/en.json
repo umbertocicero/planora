@@ -158,7 +158,19 @@
       "duplicate": "Duplicate",
       "archive": "Archive",
       "exportCSV": "Export CSV",
-      "exportPDF": "Export PDF"
+      "exportPDF": "Export PDF",
+      "closePoll": "Close poll",
+      "activatePoll": "Reactivate poll",
+      "deletePoll": "Delete poll",
+      "pollClosed": "Poll closed successfully",
+      "pollActivated": "Poll reactivated successfully",
+      "pollDeleted": "Poll deleted successfully",
+      "statusError": "Failed to update poll status",
+      "deleteError": "Failed to delete poll",
+      "deleteConfirmTitle": "Delete poll?",
+      "deleteConfirmDescription": "Are you sure you want to delete \"{title}\"? This action cannot be undone and all votes will be lost.",
+      "cancel": "Cancel",
+      "delete": "Delete"
     },
     "empty": {
       "title": "No polls yet",

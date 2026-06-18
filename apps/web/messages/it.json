@@ -158,7 +158,19 @@
       "duplicate": "Duplica",
       "archive": "Archivia",
       "exportCSV": "Esporta CSV",
-      "exportPDF": "Esporta PDF"
+      "exportPDF": "Esporta PDF",
+      "closePoll": "Chiudi sondaggio",
+      "activatePoll": "Riattiva sondaggio",
+      "deletePoll": "Elimina sondaggio",
+      "pollClosed": "Sondaggio chiuso con successo",
+      "pollActivated": "Sondaggio riattivato con successo",
+      "pollDeleted": "Sondaggio eliminato con successo",
+      "statusError": "Errore nell'aggiornamento dello stato",
+      "deleteError": "Errore nell'eliminazione del sondaggio",
+      "deleteConfirmTitle": "Eliminare il sondaggio?",
+      "deleteConfirmDescription": "Sei sicuro di voler eliminare \"{title}\"? Questa azione non può essere annullata e tutti i voti andranno persi.",
+      "cancel": "Annulla",
+      "delete": "Elimina"
     },
     "empty": {
       "title": "Nessun sondaggio",
