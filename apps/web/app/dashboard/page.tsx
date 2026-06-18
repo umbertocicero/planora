@@ -3,8 +3,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { Plus, BarChart3, Users, FileText, Loader2, MoreVertical, Trash2, XCircle, CheckCircle } from 'lucide-react';
+import { Plus, BarChart3, Users, FileText, Loader2, MoreVertical, Trash2, XCircle, CheckCircle, Vote } from 'lucide-react';
 import { toast } from 'sonner';
+import type { User } from '@supabase/supabase-js';
 
 import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
@@ -41,6 +42,7 @@ interface Poll {
   title: string;
   status: string;
   created_at: string;
+  creator_id: string | null;
 }
 
 interface PollWithVotes extends Poll {
@@ -49,7 +51,9 @@ interface PollWithVotes extends Poll {
 
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
-  const [polls, setPolls] = useState<PollWithVotes[]>([]);
+  const [myPolls, setMyPolls] = useState<PollWithVotes[]>([]);
+  const [votedPolls, setVotedPolls] = useState<PollWithVotes[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [stats, setStats] = useState({
     totalPolls: 0,
     activePolls: 0,
@@ -62,23 +66,30 @@ export default function DashboardPage() {
   const fetchDashboardData = useCallback(async () => {
     const supabase = createClient();
     
-    // Fetch all polls
-    const { data: pollsData, error: pollsError } = await supabase
-      .from('polls')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (pollsError) {
-      console.error('Error fetching polls:', pollsError);
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       setLoading(false);
       return;
     }
+    setCurrentUser(user);
+    
+    // Fetch polls created by user
+    const { data: myPollsData, error: myPollsError } = await supabase
+      .from('polls')
+      .select('*')
+      .eq('creator_id', user.id)
+      .order('created_at', { ascending: false });
 
-    const pollsList = pollsData || [];
+    if (myPollsError) {
+      console.error('Error fetching my polls:', myPollsError);
+    }
 
-    // Fetch vote counts for each poll
-    const pollsWithVotes: PollWithVotes[] = await Promise.all(
-      pollsList.map(async (poll) => {
+    const myPollsList = myPollsData || [];
+
+    // Fetch vote counts for my polls
+    const myPollsWithVotes: PollWithVotes[] = await Promise.all(
+      myPollsList.map(async (poll) => {
         const { count } = await supabase
           .from('votes')
           .select('*', { count: 'exact', head: true })
@@ -91,12 +102,51 @@ export default function DashboardPage() {
       })
     );
 
-    setPolls(pollsWithVotes);
+    setMyPolls(myPollsWithVotes);
 
-    // Calculate stats
-    const totalPolls = pollsList.length;
-    const activePolls = pollsList.filter(p => p.status === 'active').length;
-    const totalVotes = pollsWithVotes.reduce((sum, p) => sum + p.voteCount, 0);
+    // Fetch polls where user has voted (but not created by user)
+    const { data: userVotes } = await supabase
+      .from('votes')
+      .select('poll_id')
+      .eq('user_id', user.id);
+
+    const votedPollIds = [...new Set((userVotes || []).map(v => v.poll_id))];
+    
+    // Filter out polls created by user
+    const otherPollIds = votedPollIds.filter(
+      pollId => !myPollsList.some(p => p.id === pollId)
+    );
+
+    if (otherPollIds.length > 0) {
+      const { data: votedPollsData } = await supabase
+        .from('polls')
+        .select('*')
+        .in('id', otherPollIds)
+        .order('created_at', { ascending: false });
+
+      const votedPollsWithVotes: PollWithVotes[] = await Promise.all(
+        (votedPollsData || []).map(async (poll) => {
+          const { count } = await supabase
+            .from('votes')
+            .select('*', { count: 'exact', head: true })
+            .eq('poll_id', poll.id);
+
+          return {
+            ...poll,
+            voteCount: count || 0,
+          };
+        })
+      );
+
+      setVotedPolls(votedPollsWithVotes);
+    } else {
+      setVotedPolls([]);
+    }
+
+    // Calculate stats (only for my polls)
+    const totalPolls = myPollsList.length;
+    const activePolls = myPollsList.filter(p => p.status === 'active').length;
+    const totalVotes = myPollsWithVotes.reduce((sum, p) => sum + p.voteCount, 0);
 
     setStats({
       totalPolls,
@@ -237,16 +287,16 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          {/* Polls List */}
-          <Card>
+          {/* My Polls List */}
+          <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Your Polls</CardTitle>
+              <CardTitle>{t('myPolls.title')}</CardTitle>
               <CardDescription>
-                Manage and view results of your polls
+                {t('myPolls.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {polls.length === 0 ? (
+              {myPolls.length === 0 ? (
                 <div className="py-12 text-center">
                   <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
                   <h3 className="mt-4 text-lg font-semibold">{t('empty.title')}</h3>
@@ -259,7 +309,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="divide-y">
-                  {polls.map((poll) => (
+                  {myPolls.map((poll) => (
                     <div
                       key={poll.id}
                       className="flex items-center justify-between py-4 transition-colors hover:bg-muted/50"
@@ -317,6 +367,47 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Polls I Voted In */}
+          {votedPolls.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Vote className="h-5 w-5" />
+                  {t('votedPolls.title')}
+                </CardTitle>
+                <CardDescription>
+                  {t('votedPolls.description')}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="divide-y">
+                  {votedPolls.map((poll) => (
+                    <div
+                      key={poll.id}
+                      className="flex items-center justify-between py-4 transition-colors hover:bg-muted/50"
+                    >
+                      <Link href={`/polls/${poll.short_id}`} className="flex-1">
+                        <h3 className="font-medium">{poll.title}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {poll.voteCount} votes • {poll.status}
+                        </p>
+                      </Link>
+                      <span
+                        className={`rounded-full px-2 py-1 text-xs font-medium ${
+                          poll.status === 'active'
+                            ? 'bg-accent/10 text-accent'
+                            : 'bg-muted text-muted-foreground'
+                        }`}
+                      >
+                        {poll.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </main>
 

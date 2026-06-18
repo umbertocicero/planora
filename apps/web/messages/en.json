@@ -176,6 +176,14 @@
       "title": "No polls yet",
       "description": "Create your first poll to get started",
       "cta": "Create Poll"
+    },
+    "myPolls": {
+      "title": "My Polls",
+      "description": "Manage and view results of polls you created"
+    },
+    "votedPolls": {
+      "title": "Polls I Voted In",
+      "description": "Polls created by others where you participated"
     }
   },
   "auth": {

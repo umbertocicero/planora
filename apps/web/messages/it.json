@@ -176,6 +176,14 @@
       "title": "Nessun sondaggio",
       "description": "Crea il tuo primo sondaggio per iniziare",
       "cta": "Crea Sondaggio"
+    },
+    "myPolls": {
+      "title": "I Miei Sondaggi",
+      "description": "Gestisci e visualizza i risultati dei sondaggi che hai creato"
+    },
+    "votedPolls": {
+      "title": "Sondaggi in cui ho Votato",
+      "description": "Sondaggi creati da altri a cui hai partecipato"
     }
   },
   "auth": {
