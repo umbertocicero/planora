@@ -552,6 +552,4 @@ Distribuito sotto licenza **MIT**. Vedi `LICENSE` per maggiori informazioni.
 
 ⭐ **Se ti piace il progetto, lascia una stella!** ⭐
 
-Made with ❤️ in Italy
-
 </div>
