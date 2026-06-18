@@ -221,6 +221,16 @@ export default function DashboardPage() {
     });
   };
 
+  const getDashboardName = () => {
+    if (!currentUser) return 'user';
+
+    const fullName = (currentUser.user_metadata?.full_name || '').trim();
+    if (!fullName) return 'user';
+
+    // Show only first name in the welcome greeting.
+    return fullName.split(/\s+/)[0] || 'user';
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -244,7 +254,7 @@ export default function DashboardPage() {
             <div>
               <h1 className="text-3xl font-bold">{t('title')}</h1>
               <p className="text-muted-foreground">
-                {t('welcome', { name: 'User' })}
+                {t('welcome', { name: getDashboardName() })}
               </p>
             </div>
             <Button asChild>

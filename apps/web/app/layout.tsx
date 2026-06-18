@@ -13,15 +13,24 @@ export const metadata: Metadata = {
   description:
     'Create polls, schedule meetings, and collect availability in minutes. No registration required.',
   keywords: ['polls', 'scheduling', 'meetings', 'voting', 'availability'],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://planora-jet.vercel.app'),
   icons: {
-    icon: '/icon.svg',
-    apple: '/apple-icon.svg',
+    icon: '/icon',
+    apple: '/apple-icon',
   },
+  manifest: '/manifest.webmanifest',
   openGraph: {
     title: 'Planora - Simple polls for better decisions',
     description: 'Create polls, schedule meetings, and collect availability in minutes.',
     type: 'website',
     siteName: 'Planora',
+    images: ['/opengraph-image.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Planora - Simple polls for better decisions',
+    description: 'Create polls, schedule meetings, and collect availability in minutes.',
+    images: ['/opengraph-image.png'],
   },
 };
 

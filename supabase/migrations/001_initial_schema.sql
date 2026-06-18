@@ -219,7 +219,8 @@ CREATE TRIGGER on_auth_user_created
 -- VIEWS FOR RESULTS
 -- ===========================================
 
-CREATE OR REPLACE VIEW public.poll_results AS
+CREATE OR REPLACE VIEW public.poll_results
+WITH (security_invoker = true) AS
 SELECT 
     p.id AS poll_id,
     p.short_id,
