@@ -63,9 +63,6 @@ export const updateProfileSchema = z.object({
   notificationEmail: z.boolean().optional(),
 });
 
-// Export types from schemas
-export type CreatePollInput = z.infer<typeof createPollSchema>;
-export type CreateVoteInput = z.infer<typeof createVoteSchema>;
+// Inferred types (use these for runtime validation)
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
-export type PollType = z.infer<typeof pollTypeSchema>;
 export type PollStatus = z.infer<typeof pollStatusSchema>;
