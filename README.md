@@ -51,9 +51,9 @@
 
 ---
 
-## 🎬 Demo
+## 🎬 Live
 
-> 🚧 Demo online disponibile presto su: `https://planora.vercel.app`
+> 🚧 Online disponibile su: `https://planora-web-jet.vercel.app/`
 
 ### Screenshot
 
