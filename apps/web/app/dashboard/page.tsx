@@ -110,7 +110,7 @@ export default function DashboardPage() {
       .select('poll_id')
       .eq('user_id', user.id);
 
-    const votedPollIds = [...new Set((userVotes || []).map(v => v.poll_id))];
+    const votedPollIds = Array.from(new Set((userVotes || []).map(v => v.poll_id)));
     
     // Filter out polls created by user
     const otherPollIds = votedPollIds.filter(

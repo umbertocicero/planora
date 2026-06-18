@@ -524,8 +524,8 @@ Distribuito sotto licenza **MIT**. Vedi `LICENSE` per maggiori informazioni.
 ## 👤 Autore
 
 **Il Tuo Nome**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Il Tuo Profilo](https://linkedin.com/in/yourprofile)
+- GitHub: [@yourusername](https://github.com/umbertocicero)
+- LinkedIn: [Il Tuo Profilo](https://www.linkedin.com/in/umberto-antonio-cicero/)
 
 ---
 
