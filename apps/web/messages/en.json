@@ -1,0 +1,173 @@
+{
+  "common": {
+    "appName": "Planora",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "or": "or",
+    "and": "and"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "createPoll": "Create Poll",
+    "myPolls": "My Polls",
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up"
+  },
+  "home": {
+    "hero": {
+      "title": "Simple polls for better decisions",
+      "subtitle": "Create polls, schedule meetings, and collect availability in minutes. No registration required.",
+      "cta": "Create a Poll",
+      "ctaSecondary": "See How It Works"
+    },
+    "features": {
+      "title": "Everything you need",
+      "singleChoice": {
+        "title": "Single Choice",
+        "description": "Let participants choose one option from many"
+      },
+      "multipleChoice": {
+        "title": "Multiple Choice",
+        "description": "Allow selecting multiple options"
+      },
+      "calendar": {
+        "title": "Calendar Polls",
+        "description": "Find the best time for everyone"
+      }
+    }
+  },
+  "poll": {
+    "types": {
+      "single": "Single Choice",
+      "multiple": "Multiple Choice",
+      "calendar": "Calendar Poll"
+    },
+    "create": {
+      "title": "Create a Poll",
+      "pollTitle": "Poll Title",
+      "pollTitlePlaceholder": "What would you like to decide?",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Add more context for participants...",
+      "pollType": "Poll Type",
+      "options": "Options",
+      "addOption": "Add Option",
+      "optionPlaceholder": "Option {number}",
+      "settings": "Settings",
+      "allowMultiple": "Allow multiple votes per person",
+      "allowAnonymous": "Allow anonymous voting",
+      "setExpiration": "Set expiration date",
+      "requireName": "Require participant name",
+      "createPoll": "Create Poll"
+    },
+    "vote": {
+      "title": "Cast Your Vote",
+      "yourName": "Your Name",
+      "namePlaceholder": "Enter your name",
+      "selectOption": "Select an option",
+      "selectOptions": "Select options",
+      "submitVote": "Submit Vote",
+      "voteRecorded": "Your vote has been recorded!",
+      "alreadyVoted": "You have already voted"
+    },
+    "results": {
+      "title": "Results",
+      "totalVotes": "{count} votes",
+      "noVotes": "No votes yet",
+      "viewResults": "View Results",
+      "hideResults": "Hide Results",
+      "export": "Export Results"
+    },
+    "share": {
+      "title": "Share Poll",
+      "copyLink": "Copy Link",
+      "qrCode": "QR Code",
+      "shareVia": "Share via"
+    },
+    "status": {
+      "active": "Active",
+      "closed": "Closed",
+      "draft": "Draft",
+      "expired": "Expired"
+    }
+  },
+  "calendar": {
+    "selectDates": "Select available dates",
+    "selectTimes": "Select available times",
+    "timezone": "Timezone",
+    "availableSlots": "Available Slots",
+    "noAvailability": "No availability selected"
+  },
+  "dashboard": {
+    "title": "My Dashboard",
+    "welcome": "Welcome back, {name}!",
+    "stats": {
+      "totalPolls": "Total Polls",
+      "activePolls": "Active Polls",
+      "totalVotes": "Total Votes"
+    },
+    "tabs": {
+      "active": "Active",
+      "closed": "Closed",
+      "drafts": "Drafts"
+    },
+    "actions": {
+      "duplicate": "Duplicate",
+      "archive": "Archive",
+      "exportCSV": "Export CSV",
+      "exportPDF": "Export PDF"
+    },
+    "empty": {
+      "title": "No polls yet",
+      "description": "Create your first poll to get started",
+      "cta": "Create Poll"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "signup": {
+      "title": "Create an account",
+      "subtitle": "Get started with Planora",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "social": {
+      "continueWith": "Continue with {provider}",
+      "google": "Google",
+      "apple": "Apple"
+    }
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMatch": "Passwords do not match",
+    "pollNotFound": "Poll not found",
+    "unauthorized": "You are not authorized to perform this action"
+  }
+}

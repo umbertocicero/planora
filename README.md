@@ -1,86 +1,557 @@
-# Planora
+# 🗳️ Planora
 
-A collaborative polling and scheduling platform built with Next.js, NestJS, and Supabase.
+**Planora** è una piattaforma web collaborativa per creare e gestire sondaggi, votazioni e pianificazione di eventi. Semplifica l'organizzazione di riunioni, decisioni di team e raccolta disponibilità.
 
-## 🚀 Quick Start with GitHub Codespaces
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/umbertocicero/planora)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/umbertocicero/planora)
 
-1. **Create a GitHub repository** and push this code
-2. **Open in Codespaces**: Click "Code" → "Codespaces" → "Create codespace"
-3. **Wait for setup**: The devcontainer will install all dependencies automatically
-4. **Configure Supabase**:
-   - Create a free account at [supabase.com](https://supabase.com)
-   - Create a new project
-   - Copy your project URL and keys to `.env.local`
-   - Run the migration in Supabase SQL Editor
+---
 
-## 📁 Project Structure
+## 📋 Indice
+
+- [Funzionalità](#-funzionalità)
+- [Demo](#-demo)
+- [Tech Stack](#-tech-stack)
+- [Prerequisiti](#-prerequisiti)
+- [Installazione](#-installazione)
+- [Configurazione](#-configurazione)
+- [Sviluppo](#-sviluppo)
+- [Struttura Progetto](#-struttura-progetto)
+- [Deploy](#-deploy)
+- [API Reference](#-api-reference)
+- [Contribuire](#-contribuire)
+- [Roadmap](#-roadmap)
+- [Licenza](#-licenza)
+
+---
+
+## ✨ Funzionalità
+
+### Tipi di Sondaggio
+| Tipo | Descrizione |
+|------|-------------|
+| **Scelta Singola** | I partecipanti selezionano una sola opzione |
+| **Scelta Multipla** | Selezione di più opzioni con limiti configurabili |
+| **Calendario** | Raccolta disponibilità con date e fasce orarie |
+
+### Caratteristiche Principali
+- 🔗 **Link condivisibili** - Condividi via link, QR code, email, WhatsApp
+- 👤 **Votazione guest** - Partecipa senza registrazione
+- 📊 **Risultati real-time** - Aggiornamenti istantanei con Supabase Realtime
+- 🌍 **Multilingua** - Italiano e Inglese
+- 🌙 **Dark mode** - Tema chiaro/scuro automatico
+- 📱 **Mobile-first** - Design responsive ottimizzato
+- 🔒 **Privacy** - Protezione password opzionale
+- 📤 **Export** - Scarica risultati in CSV
+
+### Dashboard Utente
+- Gestione sondaggi attivi, chiusi e bozze
+- Statistiche di partecipazione
+- Duplicazione e archiviazione sondaggi
+
+---
+
+## 🎬 Demo
+
+> 🚧 Demo online disponibile presto su: `https://planora.vercel.app`
+
+### Screenshot
+
+| Home | Crea Sondaggio | Vota |
+|------|----------------|------|
+| ![Home](docs/screenshots/home.png) | ![Create](docs/screenshots/create.png) | ![Vote](docs/screenshots/vote.png) |
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+| Tecnologia | Versione | Descrizione |
+|------------|----------|-------------|
+| [Next.js](https://nextjs.org/) | 14.x | React framework con App Router |
+| [React](https://react.dev/) | 18.x | UI library |
+| [TailwindCSS](https://tailwindcss.com/) | 3.x | Utility-first CSS |
+| [shadcn/ui](https://ui.shadcn.com/) | latest | Componenti UI accessibili |
+| [next-intl](https://next-intl-docs.vercel.app/) | 3.x | Internazionalizzazione |
+| [React Hook Form](https://react-hook-form.com/) | 7.x | Gestione form |
+| [Zod](https://zod.dev/) | 3.x | Validazione schema |
+
+### Backend
+| Tecnologia | Versione | Descrizione |
+|------------|----------|-------------|
+| [NestJS](https://nestjs.com/) | 10.x | Node.js framework |
+| [Supabase](https://supabase.com/) | 2.x | Database + Auth + Realtime |
+| [PostgreSQL](https://www.postgresql.org/) | 15.x | Database relazionale |
+
+### Infrastruttura
+| Servizio | Piano | Costo |
+|----------|-------|-------|
+| [Vercel](https://vercel.com/) | Hobby | Gratuito |
+| [Supabase](https://supabase.com/) | Free | Gratuito (500MB) |
+| [GitHub Codespaces](https://github.com/features/codespaces) | Free | 60h/mese |
+| [Resend](https://resend.com/) | Free | 3000 email/mese |
+
+**💰 Costo totale MVP: €0/mese**
+
+---
+
+## 📋 Prerequisiti
+
+### Opzione A: GitHub Codespaces (Consigliato) ⭐
+**Nessuna installazione locale richiesta!**
+- Account GitHub
+- Browser moderno
+
+### Opzione B: Sviluppo Locale
+- Node.js 18+ 
+- pnpm 8+
+- Git
+
+---
+
+## 🚀 Installazione
+
+### Metodo 1: GitHub Codespaces (Senza installazioni)
+
+1. **Fork o crea il repository**
+   ```
+   https://github.com/umbertocicero/planora
+   ```
+
+2. **Apri in Codespaces**
+   - Vai al tuo repository su GitHub
+   - Clicca **Code** → **Codespaces** → **Create codespace on main**
+   - Attendi 2-3 minuti per il setup automatico
+
+3. **Tutto pronto!**
+   - Le dipendenze sono installate automaticamente
+   - VS Code si apre nel browser
+   - Esegui `pnpm dev` per avviare
+
+### Metodo 2: Installazione Locale
+
+```bash
+# 1. Clona il repository
+git clone https://github.com/umbertocicero/planora.git
+cd planora
+
+# 2. Installa pnpm (se non presente)
+npm install -g pnpm
+
+# 3. Installa dipendenze
+pnpm install
+
+# 4. Copia le variabili d'ambiente
+cp .env.example .env.local
+
+# 5. Configura Supabase (vedi sezione successiva)
+
+# 6. Avvia in sviluppo
+pnpm dev
+```
+
+---
+
+## ⚙️ Configurazione
+
+### 1. Configurare Supabase
+
+1. **Crea account gratuito** su [supabase.com](https://supabase.com)
+
+2. **Crea nuovo progetto**
+   - Nome: `planora`
+   - Password database: (genera una sicura)
+   - Regione: EU West (o più vicina)
+
+3. **Copia le credenziali** da Project Settings → API:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role` → `SUPABASE_SERVICE_ROLE_KEY`
+
+4. **Esegui la migration** nel SQL Editor:
+   - Vai su SQL Editor nel dashboard Supabase
+   - Copia il contenuto di `supabase/migrations/001_initial_schema.sql`
+   - Esegui la query
+
+### 2. Configurare Autenticazione
+
+Nel dashboard Supabase → Authentication → Providers:
+
+#### Email/Password
+- Già abilitato di default
+
+#### Google OAuth
+1. Vai su [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea progetto → Credentials → OAuth 2.0 Client
+3. Authorized redirect: `https://YOUR_PROJECT.supabase.co/auth/v1/callback`
+4. Copia Client ID e Secret in Supabase
+
+#### Apple Sign In
+1. Vai su [Apple Developer](https://developer.apple.com/)
+2. Crea App ID e Service ID
+3. Configura in Supabase
+
+### 3. Configurare Resend (Email)
+
+1. Crea account su [resend.com](https://resend.com)
+2. Genera API Key
+3. Aggiungi a `.env.local`:
+   ```env
+   RESEND_API_KEY=re_xxxxxxxxxxxxx
+   ```
+
+### 4. File .env.local completo
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Email (Resend)
+RESEND_API_KEY=re_xxxxxxxxxxxxx
+
+# OAuth (opzionale)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+APPLE_CLIENT_ID=
+APPLE_CLIENT_SECRET=
+```
+
+---
+
+## 💻 Sviluppo
+
+### Comandi Disponibili
+
+```bash
+# Avvia tutti i servizi in sviluppo
+pnpm dev
+
+# Solo frontend (porta 3000)
+pnpm --filter @planora/web dev
+
+# Solo backend (porta 3001)
+pnpm --filter @planora/api dev
+
+# Build produzione
+pnpm build
+
+# Lint
+pnpm lint
+
+# Test
+pnpm test
+
+# Formattazione codice
+pnpm format
+
+# Genera tipi Supabase
+pnpm db:generate
+```
+
+### Porte di Sviluppo
+
+| Servizio | URL |
+|----------|-----|
+| Frontend Next.js | http://localhost:3000 |
+| Backend NestJS | http://localhost:3001 |
+| Supabase Studio | http://localhost:54322 |
+
+### Hot Reload
+
+Tutti i servizi supportano hot reload. Modifica il codice e vedrai le modifiche istantaneamente.
+
+---
+
+## 📁 Struttura Progetto
 
 ```
 planora/
-├── apps/
-│   ├── web/          # Next.js frontend
-│   └── api/          # NestJS backend
-├── packages/
-│   └── shared/       # Shared types and utilities
-├── supabase/
-│   └── migrations/   # Database migrations
-└── .devcontainer/    # GitHub Codespaces config
+├── 📁 .devcontainer/          # Configurazione GitHub Codespaces
+│   └── devcontainer.json
+│
+├── 📁 .github/
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions CI/CD
+│
+├── 📁 .vscode/                # Impostazioni VS Code
+│   ├── extensions.json
+│   └── settings.json
+│
+├── 📁 apps/
+│   ├── 📁 web/                # 🌐 Frontend Next.js
+│   │   ├── app/               # App Router pages
+│   │   │   ├── layout.tsx     # Layout principale
+│   │   │   ├── page.tsx       # Homepage
+│   │   │   ├── login/         # Pagina login
+│   │   │   ├── dashboard/     # Dashboard utente
+│   │   │   ├── polls/
+│   │   │   │   ├── create/    # Creazione sondaggio
+│   │   │   │   └── [id]/      # Visualizzazione/voto
+│   │   │   └── auth/
+│   │   │       └── callback/  # OAuth callback
+│   │   │
+│   │   ├── components/
+│   │   │   ├── layout/        # Header, Footer, Navigation
+│   │   │   ├── providers/     # Context providers
+│   │   │   └── ui/            # Componenti shadcn/ui
+│   │   │
+│   │   ├── lib/
+│   │   │   ├── i18n/          # Configurazione i18n
+│   │   │   ├── supabase/      # Client Supabase
+│   │   │   └── utils.ts       # Utility functions
+│   │   │
+│   │   ├── messages/          # Traduzioni
+│   │   │   ├── en.json
+│   │   │   └── it.json
+│   │   │
+│   │   ├── middleware.ts      # Auth middleware
+│   │   ├── next.config.js
+│   │   ├── tailwind.config.ts
+│   │   └── package.json
+│   │
+│   └── 📁 api/                # 🔧 Backend NestJS
+│       └── src/
+│           ├── main.ts        # Entry point
+│           ├── app.module.ts  # Root module
+│           ├── auth/          # Modulo autenticazione
+│           ├── polls/         # Modulo sondaggi
+│           │   ├── polls.controller.ts
+│           │   ├── polls.service.ts
+│           │   └── dto/
+│           ├── votes/         # Modulo voti
+│           └── supabase/      # Client Supabase
+│
+├── 📁 packages/
+│   └── 📁 shared/             # 📦 Codice condiviso
+│       └── src/
+│           ├── index.ts
+│           ├── types/         # TypeScript types
+│           └── schemas/       # Zod schemas
+│
+├── 📁 supabase/
+│   └── migrations/            # 🗃️ Migrazioni database
+│       └── 001_initial_schema.sql
+│
+├── .env.example               # Template variabili ambiente
+├── .gitignore
+├── .prettierrc
+├── package.json               # Root package.json
+├── pnpm-workspace.yaml        # Configurazione monorepo
+├── turbo.json                 # Configurazione Turborepo
+└── README.md
 ```
 
-## 🛠️ Development
+---
 
+## 🚢 Deploy
+
+### Deploy Frontend su Vercel
+
+1. **Connetti Repository**
+   - Vai su [vercel.com](https://vercel.com)
+   - Import Git Repository → seleziona `planora`
+
+2. **Configura Build**
+   ```
+   Framework Preset: Next.js
+   Root Directory: apps/web
+   Build Command: pnpm build
+   Install Command: pnpm install
+   ```
+
+3. **Aggiungi Environment Variables**
+   - Copia tutte le variabili da `.env.local`
+
+4. **Deploy!**
+   - Vercel builderà e deployerà automaticamente
+   - Ogni push su `main` triggera un nuovo deploy
+
+### Deploy Backend (Opzionale)
+
+Il backend NestJS è opzionale se usi solo le API di Supabase. Per deployarlo:
+
+**Railway.app** (gratuito):
 ```bash
-# Install dependencies
-pnpm install
+# Installa Railway CLI
+npm i -g @railway/cli
 
-# Start development servers
-pnpm dev
-
-# Frontend: http://localhost:3000
-# Backend: http://localhost:3001
+# Login e deploy
+railway login
+railway init
+railway up
 ```
 
-## 🔧 Environment Variables
+**Render.com** (gratuito):
+1. Connetti repository
+2. Seleziona `apps/api` come root
+3. Build command: `pnpm build`
+4. Start command: `node dist/main`
 
-Copy `.env.example` to `.env.local` and fill in your values:
+---
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+## 📚 API Reference
+
+### Endpoints Principali
+
+#### Polls
+
+```http
+POST /api/polls
+```
+Crea un nuovo sondaggio.
+
+**Request Body:**
+```json
+{
+  "title": "Quale logo preferisci?",
+  "description": "Stiamo ridisegnando il brand",
+  "pollType": "single_choice",
+  "options": [
+    { "text": "Logo A" },
+    { "text": "Logo B" }
+  ],
+  "allowAnonymous": true,
+  "requireName": true
+}
 ```
 
-## 🎨 Features
+**Response:**
+```json
+{
+  "id": "uuid",
+  "shortId": "abc123",
+  "title": "Quale logo preferisci?",
+  "status": "active",
+  "createdAt": "2024-01-15T10:00:00Z"
+}
+```
 
-- ✅ Single choice polls
-- ✅ Multiple choice polls
-- ✅ Calendar/date polls
-- ✅ Anonymous voting
-- ✅ Shareable links
-- ✅ Real-time results
-- ✅ Multilingual (EN/IT)
-- ✅ Dark mode
+---
 
-## 📦 Tech Stack
+```http
+GET /api/polls/:shortId
+```
+Ottieni dettagli sondaggio con opzioni e voti.
 
-- **Frontend**: Next.js 14, React, TailwindCSS, shadcn/ui
-- **Backend**: NestJS, TypeScript
-- **Database**: Supabase (PostgreSQL)
-- **Auth**: Supabase Auth
-- **Deployment**: Vercel
+---
 
-## 🚢 Deployment
+```http
+POST /api/votes
+```
+Registra un voto.
 
-### Frontend (Vercel)
-1. Connect your GitHub repo to Vercel
-2. Add environment variables
-3. Deploy!
+**Request Body:**
+```json
+{
+  "pollId": "uuid",
+  "optionIds": ["uuid1"],
+  "voterName": "Mario Rossi"
+}
+```
 
-### Database (Supabase)
-1. Run migrations in SQL Editor
-2. Enable Row Level Security
-3. Configure authentication providers
+---
 
-## 📄 License
+### Autenticazione
 
-MIT
+Tutte le richieste autenticate richiedono header:
+```http
+Authorization: Bearer <supabase_jwt_token>
+```
+
+---
+
+## 🤝 Contribuire
+
+I contributi sono benvenuti! 
+
+### Come Contribuire
+
+1. **Fork** il repository
+2. **Crea branch** per la feature
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Committa** le modifiche
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. **Push** sul branch
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Apri Pull Request**
+
+### Linee Guida
+
+- Segui lo stile di codice esistente
+- Aggiungi test per nuove funzionalità
+- Aggiorna documentazione se necessario
+- Un commit = una modifica logica
+
+---
+
+## 🗺️ Roadmap
+
+### MVP (Completato) ✅
+- [x] Sondaggi scelta singola/multipla
+- [x] Sondaggi calendario
+- [x] Link condivisibili + QR
+- [x] Votazione guest
+- [x] Dashboard base
+- [x] Multilingua IT/EN
+- [x] Dark mode
+
+### v1.1 (In Sviluppo) 🚧
+- [ ] Export CSV/PDF
+- [ ] Notifiche email
+- [ ] Protezione password sondaggi
+- [ ] Scadenza automatica
+
+### v1.2 (Pianificato) 📋
+- [ ] Integrazione Google Calendar
+- [ ] Webhook per notifiche
+- [ ] Statistiche avanzate
+
+### v2.0 (Futuro) 🔮
+- [ ] AI: suggerimento slot migliori
+- [ ] Sondaggi con ranking
+- [ ] Enterprise SSO
+- [ ] App mobile (React Native)
+
+---
+
+## 📄 Licenza
+
+Distribuito sotto licenza **MIT**. Vedi `LICENSE` per maggiori informazioni.
+
+---
+
+## 👤 Autore
+
+**Il Tuo Nome**
+- GitHub: [@yourusername](https://github.com/yourusername)
+- LinkedIn: [Il Tuo Profilo](https://linkedin.com/in/yourprofile)
+
+---
+
+## 🙏 Ringraziamenti
+
+- [shadcn/ui](https://ui.shadcn.com/) - Componenti UI
+- [Supabase](https://supabase.com/) - Backend as a Service
+- [Vercel](https://vercel.com/) - Hosting
+- [Lucide Icons](https://lucide.dev/) - Icone
+
+---
+
+<div align="center">
+
+⭐ **Se ti piace il progetto, lascia una stella!** ⭐
+
+Made with ❤️ in Italy
+
+</div>

@@ -1,0 +1,173 @@
+{
+  "common": {
+    "appName": "Planora",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "create": "Crea",
+    "share": "Condividi",
+    "copy": "Copia",
+    "copied": "Copiato!",
+    "submit": "Invia",
+    "back": "Indietro",
+    "next": "Avanti",
+    "close": "Chiudi",
+    "or": "o",
+    "and": "e"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "createPoll": "Crea Sondaggio",
+    "myPolls": "I Miei Sondaggi",
+    "login": "Accedi",
+    "logout": "Esci",
+    "signup": "Registrati"
+  },
+  "home": {
+    "hero": {
+      "title": "Sondaggi semplici per decisioni migliori",
+      "subtitle": "Crea sondaggi, pianifica riunioni e raccogli disponibilità in pochi minuti. Nessuna registrazione richiesta.",
+      "cta": "Crea un Sondaggio",
+      "ctaSecondary": "Scopri Come Funziona"
+    },
+    "features": {
+      "title": "Tutto ciò di cui hai bisogno",
+      "singleChoice": {
+        "title": "Scelta Singola",
+        "description": "I partecipanti scelgono un'opzione tra molte"
+      },
+      "multipleChoice": {
+        "title": "Scelta Multipla",
+        "description": "Consenti di selezionare più opzioni"
+      },
+      "calendar": {
+        "title": "Sondaggi Calendario",
+        "description": "Trova il momento migliore per tutti"
+      }
+    }
+  },
+  "poll": {
+    "types": {
+      "single": "Scelta Singola",
+      "multiple": "Scelta Multipla",
+      "calendar": "Sondaggio Calendario"
+    },
+    "create": {
+      "title": "Crea un Sondaggio",
+      "pollTitle": "Titolo del Sondaggio",
+      "pollTitlePlaceholder": "Cosa vorresti decidere?",
+      "description": "Descrizione (opzionale)",
+      "descriptionPlaceholder": "Aggiungi più contesto per i partecipanti...",
+      "pollType": "Tipo di Sondaggio",
+      "options": "Opzioni",
+      "addOption": "Aggiungi Opzione",
+      "optionPlaceholder": "Opzione {number}",
+      "settings": "Impostazioni",
+      "allowMultiple": "Consenti voti multipli per persona",
+      "allowAnonymous": "Consenti voto anonimo",
+      "setExpiration": "Imposta data di scadenza",
+      "requireName": "Richiedi nome del partecipante",
+      "createPoll": "Crea Sondaggio"
+    },
+    "vote": {
+      "title": "Esprimi il Tuo Voto",
+      "yourName": "Il Tuo Nome",
+      "namePlaceholder": "Inserisci il tuo nome",
+      "selectOption": "Seleziona un'opzione",
+      "selectOptions": "Seleziona le opzioni",
+      "submitVote": "Invia Voto",
+      "voteRecorded": "Il tuo voto è stato registrato!",
+      "alreadyVoted": "Hai già votato"
+    },
+    "results": {
+      "title": "Risultati",
+      "totalVotes": "{count} voti",
+      "noVotes": "Ancora nessun voto",
+      "viewResults": "Mostra Risultati",
+      "hideResults": "Nascondi Risultati",
+      "export": "Esporta Risultati"
+    },
+    "share": {
+      "title": "Condividi Sondaggio",
+      "copyLink": "Copia Link",
+      "qrCode": "Codice QR",
+      "shareVia": "Condividi tramite"
+    },
+    "status": {
+      "active": "Attivo",
+      "closed": "Chiuso",
+      "draft": "Bozza",
+      "expired": "Scaduto"
+    }
+  },
+  "calendar": {
+    "selectDates": "Seleziona le date disponibili",
+    "selectTimes": "Seleziona gli orari disponibili",
+    "timezone": "Fuso orario",
+    "availableSlots": "Slot Disponibili",
+    "noAvailability": "Nessuna disponibilità selezionata"
+  },
+  "dashboard": {
+    "title": "La Mia Dashboard",
+    "welcome": "Bentornato, {name}!",
+    "stats": {
+      "totalPolls": "Sondaggi Totali",
+      "activePolls": "Sondaggi Attivi",
+      "totalVotes": "Voti Totali"
+    },
+    "tabs": {
+      "active": "Attivi",
+      "closed": "Chiusi",
+      "drafts": "Bozze"
+    },
+    "actions": {
+      "duplicate": "Duplica",
+      "archive": "Archivia",
+      "exportCSV": "Esporta CSV",
+      "exportPDF": "Esporta PDF"
+    },
+    "empty": {
+      "title": "Nessun sondaggio",
+      "description": "Crea il tuo primo sondaggio per iniziare",
+      "cta": "Crea Sondaggio"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bentornato",
+      "subtitle": "Accedi al tuo account",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Password dimenticata?",
+      "noAccount": "Non hai un account?",
+      "signUp": "Registrati"
+    },
+    "signup": {
+      "title": "Crea un account",
+      "subtitle": "Inizia con Planora",
+      "name": "Nome Completo",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Conferma Password",
+      "hasAccount": "Hai già un account?",
+      "signIn": "Accedi"
+    },
+    "social": {
+      "continueWith": "Continua con {provider}",
+      "google": "Google",
+      "apple": "Apple"
+    }
+  },
+  "errors": {
+    "required": "Questo campo è obbligatorio",
+    "invalidEmail": "Inserisci un'email valida",
+    "passwordMin": "La password deve avere almeno 8 caratteri",
+    "passwordMatch": "Le password non corrispondono",
+    "pollNotFound": "Sondaggio non trovato",
+    "unauthorized": "Non sei autorizzato a eseguire questa azione"
+  }
+}
