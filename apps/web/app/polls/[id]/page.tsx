@@ -278,8 +278,93 @@ export default function PollVotePage() {
                 </div>
               )}
 
-              {/* Options / Results */}
-              {showResults || poll.show_results_before_vote ? (
+              {/* Voting Options (show when not voted) */}
+              {!hasVoted && (
+                <div className="space-y-3">
+                  {poll.poll_type === 'single_choice' ? (
+                    <RadioGroup
+                      value={selectedOptions[0]}
+                      onValueChange={(value) => setSelectedOptions([value])}
+                    >
+                      {options.map((option) => {
+                        const result = results.find((r) => r.optionId === option.id);
+                        return (
+                          <div
+                            key={option.id}
+                            className={cn(
+                              'flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50',
+                              selectedOptions.includes(option.id) && 'border-primary bg-primary/5'
+                            )}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <RadioGroupItem value={option.id} id={option.id} />
+                              <Label
+                                htmlFor={option.id}
+                                className="flex-1 cursor-pointer"
+                              >
+                                {getOptionText(option)}
+                              </Label>
+                            </div>
+                            {poll.show_results_before_vote && (
+                              <span className="text-sm text-muted-foreground">
+                                {result?.voteCount || 0} ({result?.percentage || 0}%)
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </RadioGroup>
+                  ) : (
+                    options.map((option) => {
+                      const result = results.find((r) => r.optionId === option.id);
+                      return (
+                        <div
+                          key={option.id}
+                          className={cn(
+                            'flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50',
+                            selectedOptions.includes(option.id) && 'border-primary bg-primary/5'
+                          )}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <Checkbox
+                              id={option.id}
+                              checked={selectedOptions.includes(option.id)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedOptions([...selectedOptions, option.id]);
+                                } else {
+                                  setSelectedOptions(
+                                    selectedOptions.filter((id) => id !== option.id)
+                                  );
+                                }
+                              }}
+                            />
+                            <Label
+                              htmlFor={option.id}
+                              className="flex-1 cursor-pointer"
+                            >
+                              {getOptionText(option)}
+                            </Label>
+                          </div>
+                          {poll.show_results_before_vote && (
+                            <span className="text-sm text-muted-foreground">
+                              {result?.voteCount || 0} ({result?.percentage || 0}%)
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
+                  {poll.show_results_before_vote && (
+                    <p className="text-sm text-muted-foreground">
+                      {t('poll.results.totalVotes', { count: totalVotes })}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Results Only (show after voting) */}
+              {hasVoted && (
                 <div className="space-y-3">
                   {options.map((option) => {
                     const result = results.find((r) => r.optionId === option.id);
@@ -303,57 +388,6 @@ export default function PollVotePage() {
                   <p className="text-sm text-muted-foreground">
                     {t('poll.results.totalVotes', { count: totalVotes })}
                   </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {poll.poll_type === 'single_choice' ? (
-                    <RadioGroup
-                      value={selectedOptions[0]}
-                      onValueChange={(value) => setSelectedOptions([value])}
-                    >
-                      {options.map((option) => (
-                        <div
-                          key={option.id}
-                          className="flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted/50"
-                        >
-                          <RadioGroupItem value={option.id} id={option.id} />
-                          <Label
-                            htmlFor={option.id}
-                            className="flex-1 cursor-pointer"
-                          >
-                            {getOptionText(option)}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  ) : (
-                    options.map((option) => (
-                      <div
-                        key={option.id}
-                        className="flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted/50"
-                      >
-                        <Checkbox
-                          id={option.id}
-                          checked={selectedOptions.includes(option.id)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedOptions([...selectedOptions, option.id]);
-                            } else {
-                              setSelectedOptions(
-                                selectedOptions.filter((id) => id !== option.id)
-                              );
-                            }
-                          }}
-                        />
-                        <Label
-                          htmlFor={option.id}
-                          className="flex-1 cursor-pointer"
-                        >
-                          {getOptionText(option)}
-                        </Label>
-                      </div>
-                    ))
-                  )}
                 </div>
               )}
             </CardContent>
