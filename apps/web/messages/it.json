@@ -219,6 +219,13 @@
       "continueWith": "Continua con {provider}",
       "google": "Google",
       "orEmail": "O continua con email"
+    },
+    "confirm": {
+      "title": "Controlla la tua email",
+      "description": "Ti abbiamo inviato un link di conferma per completare la registrazione.",
+      "instructions": "Clicca sul link nell'email per attivare il tuo account e iniziare a usare Planora.",
+      "spam": "Non trovi l'email? Controlla la cartella spam.",
+      "backToLogin": "Torna al login"
     }
   },
   "errors": {

@@ -68,8 +68,8 @@ export default function SignupPage() {
 
       if (error) throw error;
 
-      toast.success(t('checkEmail'));
-      // Don't redirect - user needs to confirm email first
+      // Redirect to confirmation page
+      router.push('/signup/confirm');
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign up');
     } finally {
