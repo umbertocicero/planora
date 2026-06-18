@@ -13,10 +13,9 @@ const nextConfig = {
       },
     ],
   },
-  // Suppress next-intl internal config warning
-  experimental: {
-    // Needed for proper i18n routing
-  },
+  env: {
+    _next_intl_trailing_slash: ''
+  }
 };
 
 module.exports = withNextIntl(nextConfig);
