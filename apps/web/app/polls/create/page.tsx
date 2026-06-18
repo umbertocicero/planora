@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { Plus, Trash2, CheckCircle2, ListChecks, Calendar, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -118,16 +119,59 @@ export default function CreatePollPage() {
   const onSubmit = async (data: CreatePollForm) => {
     setIsSubmitting(true);
     try {
-      // In a real app, this would call the API
-      console.log('Creating poll:', data);
+      const supabase = createClient();
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      toast.success('Poll created successfully!');
-      router.push('/dashboard');
+      // Create the poll
+      const { data: poll, error: pollError } = await supabase
+        .from('polls')
+        .insert({
+          title: data.title,
+          description: data.description || null,
+          poll_type: data.pollType,
+          allow_anonymous: data.allowAnonymous,
+          require_name: data.requireName,
+          show_results_before_vote: data.showResultsBeforeVote,
+          status: 'active',
+        })
+        .select()
+        .single();
+
+      if (pollError) {
+        console.error('Error creating poll:', pollError);
+        throw new Error(pollError.message);
+      }
+
+      // Create poll options
+      const options = data.pollType === 'calendar'
+        ? (data.dateOptions || []).map((opt, index) => ({
+            poll_id: poll.id,
+            date: opt.date || null,
+            start_time: opt.startTime || null,
+            end_time: opt.endTime || null,
+            sort_order: index,
+          }))
+        : (data.options || []).map((opt, index) => ({
+            poll_id: poll.id,
+            text: opt.text,
+            sort_order: index,
+          }));
+
+      const { error: optionsError } = await supabase
+        .from('poll_options')
+        .insert(options);
+
+      if (optionsError) {
+        console.error('Error creating options:', optionsError);
+        // Rollback: delete the poll if options failed
+        await supabase.from('polls').delete().eq('id', poll.id);
+        throw new Error(optionsError.message);
+      }
+
+      toast.success(t('pollCreated') || 'Poll created successfully!');
+      router.push(`/polls/${poll.short_id}`);
     } catch (error) {
-      toast.error('Failed to create poll');
+      console.error('Failed to create poll:', error);
+      toast.error(t('createError') || 'Failed to create poll');
     } finally {
       setIsSubmitting(false);
     }

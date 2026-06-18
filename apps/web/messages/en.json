@@ -77,7 +77,9 @@
       "allowAnonymous": "Allow anonymous voting",
       "setExpiration": "Set expiration date",
       "requireName": "Require participant name",
-      "createPoll": "Create Poll"
+      "createPoll": "Create Poll",
+      "pollCreated": "Poll created successfully!",
+      "createError": "Failed to create poll"
     },
     "vote": {
       "title": "Cast Your Vote",
