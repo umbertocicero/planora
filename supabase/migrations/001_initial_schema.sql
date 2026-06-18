@@ -227,3 +227,13 @@ LEFT JOIN public.poll_options po ON p.id = po.poll_id
 LEFT JOIN public.votes v ON po.id = v.option_id
 GROUP BY p.id, p.short_id, p.title, p.poll_type, po.id, po.text, po.date, po.start_time, po.end_time
 ORDER BY p.id, po.sort_order;
+
+-- ===========================================
+-- REALTIME
+-- ===========================================
+
+-- Enable Realtime for votes table (required for live updates)
+ALTER PUBLICATION supabase_realtime ADD TABLE votes;
+
+-- Set REPLICA IDENTITY to FULL for better change tracking
+ALTER TABLE votes REPLICA IDENTITY FULL;
