@@ -995,7 +995,11 @@ export default function PollVotePage() {
                     variant="outline"
                     onClick={() => {
                       setIsEditing(false);
-                      setSelectedOptions(userVotes.map(v => v.option_id));
+                      setSelectedOptions(
+                        userVotes
+                          .map(v => v.option_id)
+                          .filter((id): id is string => id !== null)
+                      );
                     }}
                     className="flex-1"
                   >
