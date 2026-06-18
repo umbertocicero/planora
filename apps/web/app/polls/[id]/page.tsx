@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
@@ -12,8 +12,10 @@ import {
   QrCode,
   Mail,
   MessageCircle,
+  Loader2,
 } from 'lucide-react';
 
+import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -31,46 +33,118 @@ import {
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-// Mock poll data - in real app, fetch from API
-const mockPoll = {
-  id: '123',
-  shortId: 'abc123',
-  title: 'Which logo do you prefer?',
-  description: 'We are redesigning our brand and need your feedback!',
-  pollType: 'single_choice' as const,
-  options: [
-    { id: '1', text: 'Option A - Modern' },
-    { id: '2', text: 'Option B - Classic' },
-    { id: '3', text: 'Option C - Minimalist' },
-  ],
-  requireName: true,
-  showResultsBeforeVote: true,
-  results: [
-    { optionId: '1', voteCount: 12, percentage: 40, voterNames: ['Alice', 'Bob'] },
-    { optionId: '2', voteCount: 15, percentage: 50, voterNames: ['Charlie', 'David'] },
-    { optionId: '3', voteCount: 3, percentage: 10, voterNames: ['Eve'] },
-  ],
-};
+interface PollOption {
+  id: string;
+  text: string | null;
+  date: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  sort_order: number;
+}
+
+interface Poll {
+  id: string;
+  short_id: string;
+  title: string;
+  description: string | null;
+  poll_type: 'single_choice' | 'multiple_choice' | 'calendar';
+  require_name: boolean;
+  allow_anonymous: boolean;
+  show_results_before_vote: boolean;
+  status: string;
+}
+
+interface VoteResult {
+  optionId: string;
+  voteCount: number;
+  percentage: number;
+}
 
 export default function PollVotePage() {
   const t = useTranslations();
   const params = useParams();
   const pollId = params.id as string;
 
-  const [poll, setPoll] = useState(mockPoll);
+  const [poll, setPoll] = useState<Poll | null>(null);
+  const [options, setOptions] = useState<PollOption[]>([]);
+  const [results, setResults] = useState<VoteResult[]>([]);
+  const [totalVotes, setTotalVotes] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [voterName, setVoterName] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const pollUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}/polls/${pollId}` 
     : '';
 
-  const handleVote = () => {
-    if (poll.requireName && !voterName.trim()) {
+  const fetchPollData = useCallback(async () => {
+    const supabase = createClient();
+    
+    // Fetch poll by short_id
+    const { data: pollData, error: pollError } = await supabase
+      .from('polls')
+      .select('*')
+      .eq('short_id', pollId)
+      .single();
+
+    if (pollError || !pollData) {
+      setError('Poll not found');
+      setLoading(false);
+      return;
+    }
+
+    setPoll(pollData);
+
+    // Fetch options
+    const { data: optionsData } = await supabase
+      .from('poll_options')
+      .select('*')
+      .eq('poll_id', pollData.id)
+      .order('sort_order');
+
+    setOptions(optionsData || []);
+
+    // Fetch vote counts
+    const { data: votesData } = await supabase
+      .from('votes')
+      .select('option_id')
+      .eq('poll_id', pollData.id);
+
+    const votes = votesData || [];
+    const total = votes.length;
+    setTotalVotes(total);
+
+    // Calculate results
+    const voteCounts: Record<string, number> = {};
+    votes.forEach(v => {
+      voteCounts[v.option_id] = (voteCounts[v.option_id] || 0) + 1;
+    });
+
+    const resultsData: VoteResult[] = (optionsData || []).map(opt => ({
+      optionId: opt.id,
+      voteCount: voteCounts[opt.id] || 0,
+      percentage: total > 0 ? Math.round((voteCounts[opt.id] || 0) / total * 100) : 0,
+    }));
+
+    setResults(resultsData);
+    setShowResults(pollData.show_results_before_vote);
+    setLoading(false);
+  }, [pollId]);
+
+  useEffect(() => {
+    fetchPollData();
+  }, [fetchPollData]);
+
+  const handleVote = async () => {
+    if (!poll) return;
+    
+    if (poll.require_name && !voterName.trim()) {
       toast.error(t('poll.vote.namePlaceholder'));
       return;
     }
@@ -79,12 +153,38 @@ export default function PollVotePage() {
       return;
     }
 
-    // In real app, submit to API
-    console.log('Voting:', { options: selectedOptions, name: voterName });
-    
-    setHasVoted(true);
-    setShowResults(true);
-    toast.success(t('poll.vote.voteRecorded'));
+    setSubmitting(true);
+    const supabase = createClient();
+
+    try {
+      // Insert votes
+      const votes = selectedOptions.map(optionId => ({
+        poll_id: poll.id,
+        option_id: optionId,
+        voter_name: voterName.trim() || null,
+      }));
+
+      const { error: voteError } = await supabase
+        .from('votes')
+        .insert(votes);
+
+      if (voteError) {
+        console.error('Vote error:', voteError);
+        throw new Error(voteError.message);
+      }
+
+      setHasVoted(true);
+      setShowResults(true);
+      toast.success(t('poll.vote.voteRecorded'));
+      
+      // Refresh results
+      await fetchPollData();
+    } catch (err) {
+      console.error('Failed to vote:', err);
+      toast.error('Failed to submit vote');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleCopyLink = () => {
@@ -95,6 +195,7 @@ export default function PollVotePage() {
   };
 
   const handleShare = (platform: string) => {
+    if (!poll) return;
     const text = `Vote on: ${poll.title}`;
     const urls: Record<string, string> = {
       email: `mailto:?subject=${encodeURIComponent(poll.title)}&body=${encodeURIComponent(text + '\n' + pollUrl)}`,
@@ -104,7 +205,48 @@ export default function PollVotePage() {
     window.open(urls[platform], '_blank');
   };
 
-  const totalVotes = poll.results.reduce((sum, r) => sum + r.voteCount, 0);
+  // Helper to get option display text
+  const getOptionText = (option: PollOption) => {
+    if (option.text) return option.text;
+    if (option.date) {
+      let text = new Date(option.date).toLocaleDateString();
+      if (option.start_time) text += ` ${option.start_time}`;
+      if (option.end_time) text += ` - ${option.end_time}`;
+      return text;
+    }
+    return 'Option';
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !poll) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <Card className="max-w-md">
+            <CardHeader>
+              <CardTitle>Poll not found</CardTitle>
+              <CardDescription>
+                This poll may have been deleted or the link is incorrect.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -123,7 +265,7 @@ export default function PollVotePage() {
 
             <CardContent className="space-y-6">
               {/* Voter Name */}
-              {poll.requireName && !hasVoted && (
+              {poll.require_name && !hasVoted && (
                 <div>
                   <Label htmlFor="voterName">{t('poll.vote.yourName')}</Label>
                   <Input
@@ -137,16 +279,14 @@ export default function PollVotePage() {
               )}
 
               {/* Options / Results */}
-              {showResults || poll.showResultsBeforeVote ? (
+              {showResults || poll.show_results_before_vote ? (
                 <div className="space-y-3">
-                  {poll.options.map((option) => {
-                    const result = poll.results.find(
-                      (r) => r.optionId === option.id
-                    );
+                  {options.map((option) => {
+                    const result = results.find((r) => r.optionId === option.id);
                     return (
                       <div key={option.id} className="space-y-1">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium">{option.text}</span>
+                          <span className="font-medium">{getOptionText(option)}</span>
                           <span className="text-muted-foreground">
                             {result?.voteCount || 0} ({result?.percentage || 0}%)
                           </span>
@@ -166,12 +306,12 @@ export default function PollVotePage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {poll.pollType === 'single_choice' ? (
+                  {poll.poll_type === 'single_choice' ? (
                     <RadioGroup
                       value={selectedOptions[0]}
                       onValueChange={(value) => setSelectedOptions([value])}
                     >
-                      {poll.options.map((option) => (
+                      {options.map((option) => (
                         <div
                           key={option.id}
                           className="flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted/50"
@@ -181,13 +321,13 @@ export default function PollVotePage() {
                             htmlFor={option.id}
                             className="flex-1 cursor-pointer"
                           >
-                            {option.text}
+                            {getOptionText(option)}
                           </Label>
                         </div>
                       ))}
                     </RadioGroup>
                   ) : (
-                    poll.options.map((option) => (
+                    options.map((option) => (
                       <div
                         key={option.id}
                         className="flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted/50"
@@ -209,7 +349,7 @@ export default function PollVotePage() {
                           htmlFor={option.id}
                           className="flex-1 cursor-pointer"
                         >
-                          {option.text}
+                          {getOptionText(option)}
                         </Label>
                       </div>
                     ))
@@ -220,8 +360,20 @@ export default function PollVotePage() {
 
             <CardFooter className="flex-col gap-4">
               {!hasVoted && (
-                <Button onClick={handleVote} className="w-full" size="lg">
-                  {t('poll.vote.submitVote')}
+                <Button 
+                  onClick={handleVote} 
+                  className="w-full" 
+                  size="lg"
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    t('poll.vote.submitVote')
+                  )}
                 </Button>
               )}
 
