@@ -14,7 +14,7 @@ const nextConfig = {
     ],
   },
   env: {
-    _next_intl_trailing_slash: ''
+    _next_intl_trailing_slash: 'false'
   }
 };
 

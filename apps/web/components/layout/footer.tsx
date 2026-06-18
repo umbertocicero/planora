@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Heart } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -86,7 +87,10 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Planora. All rights reserved.</p>
+          <p className="flex items-center justify-center gap-1">
+            Coded with <Heart className="h-4 w-4 fill-red-500 text-red-500" /> by Umberto Antonio Cicero
+          </p>
+          <p className="mt-2">&copy; {new Date().getFullYear()} Umberto Antonio Cicero. All rights reserved.</p>
         </div>
       </div>
     </footer>

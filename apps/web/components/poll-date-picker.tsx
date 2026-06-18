@@ -10,7 +10,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
 interface DateOption {
@@ -134,9 +134,10 @@ export function PollDatePicker({ value, onChange, minDates = 2 }: PollDatePicker
                 {t('specifyTimesDescription')}
               </p>
             </div>
-            <Switch
+            <Checkbox
+              id="specify-times"
               checked={showTimes}
-              onCheckedChange={setShowTimes}
+              onCheckedChange={(checked) => setShowTimes(checked === true)}
             />
           </div>
 
