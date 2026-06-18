@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Trash2, CheckCircle2, ListChecks, Calendar } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, ListChecks, Calendar, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Header } from '@/components/layout/header';
@@ -54,11 +54,26 @@ const createPollSchema = z.object({
     z.object({
       text: z.string().min(1, 'Option text is required'),
     })
-  ).min(2, 'At least 2 options required'),
+  ).optional(),
+  dateOptions: z.array(
+    z.object({
+      date: z.string().min(1, 'Date is required'),
+      startTime: z.string().optional(),
+      endTime: z.string().optional(),
+    })
+  ).optional(),
   allowAnonymous: z.boolean().default(true),
   requireName: z.boolean().default(true),
   showResultsBeforeVote: z.boolean().default(true),
-});
+}).refine(
+  (data) => {
+    if (data.pollType === 'calendar') {
+      return data.dateOptions && data.dateOptions.length >= 2;
+    }
+    return data.options && data.options.length >= 2;
+  },
+  { message: 'At least 2 options required', path: ['options'] }
+);
 
 type CreatePollForm = z.infer<typeof createPollSchema>;
 
@@ -80,6 +95,7 @@ export default function CreatePollPage() {
     defaultValues: {
       pollType: 'single_choice',
       options: [{ text: '' }, { text: '' }],
+      dateOptions: [{ date: '', startTime: '', endTime: '' }, { date: '', startTime: '', endTime: '' }],
       allowAnonymous: true,
       requireName: true,
       showResultsBeforeVote: true,
@@ -91,7 +107,13 @@ export default function CreatePollPage() {
     name: 'options',
   });
 
+  const { fields: dateFields, append: appendDate, remove: removeDate } = useFieldArray({
+    control,
+    name: 'dateOptions',
+  });
+
   const selectedType = watch('pollType');
+  const isCalendar = selectedType === 'calendar';
 
   const onSubmit = async (data: CreatePollForm) => {
     setIsSubmitting(true);
@@ -191,44 +213,124 @@ export default function CreatePollPage() {
             {/* Options */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">{t('options')}</CardTitle>
+                <CardTitle className="text-lg">
+                  {isCalendar ? t('dateOptions') : t('options')}
+                </CardTitle>
+                {isCalendar && (
+                  <CardDescription>{t('dateOptionsDescription')}</CardDescription>
+                )}
               </CardHeader>
               <CardContent className="space-y-4">
-                {fields.map((field, index) => (
-                  <div key={field.id} className="flex gap-2">
-                    <Input
-                      {...register(`options.${index}.text`)}
-                      placeholder={t('optionPlaceholder', { number: index + 1 })}
-                      className={
-                        errors.options?.[index]?.text ? 'border-destructive' : ''
-                      }
-                    />
-                    {fields.length > 2 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                {isCalendar ? (
+                  // Calendar date/time options
+                  <>
+                    {dateFields.map((field, index) => (
+                      <div key={field.id} className="flex flex-col gap-2 rounded-lg border p-4 sm:flex-row sm:items-end">
+                        <div className="flex-1">
+                          <Label className="text-sm text-muted-foreground">
+                            <Calendar className="mr-1 inline h-3 w-3" />
+                            {t('date')}
+                          </Label>
+                          <Input
+                            type="date"
+                            {...register(`dateOptions.${index}.date`)}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <Label className="text-sm text-muted-foreground">
+                            <Clock className="mr-1 inline h-3 w-3" />
+                            {t('startTime')}
+                          </Label>
+                          <Input
+                            type="time"
+                            {...register(`dateOptions.${index}.startTime`)}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <Label className="text-sm text-muted-foreground">
+                            <Clock className="mr-1 inline h-3 w-3" />
+                            {t('endTime')}
+                          </Label>
+                          <Input
+                            type="time"
+                            {...register(`dateOptions.${index}.endTime`)}
+                            className="mt-1"
+                          />
+                        </div>
+                        {dateFields.length > 2 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeDate(index)}
+                            className="shrink-0"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                    {errors.dateOptions && (
+                      <p className="text-sm text-destructive">
+                        {typeof errors.dateOptions === 'object' && 'message' in errors.dateOptions
+                          ? errors.dateOptions.message
+                          : errors.dateOptions.root?.message}
+                      </p>
                     )}
-                  </div>
-                ))}
-                {errors.options && (
-                  <p className="text-sm text-destructive">
-                    {errors.options.message || errors.options.root?.message}
-                  </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => appendDate({ date: '', startTime: '', endTime: '' })}
+                      className="w-full"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      {t('addDate')}
+                    </Button>
+                  </>
+                ) : (
+                  // Regular text options
+                  <>
+                    {fields.map((field, index) => (
+                      <div key={field.id} className="flex gap-2">
+                        <Input
+                          {...register(`options.${index}.text`)}
+                          placeholder={t('optionPlaceholder', { number: index + 1 })}
+                          className={
+                            errors.options?.[index]?.text ? 'border-destructive' : ''
+                          }
+                        />
+                        {fields.length > 2 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => remove(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                    {errors.options && (
+                      <p className="text-sm text-destructive">
+                        {typeof errors.options === 'object' && 'message' in errors.options
+                          ? errors.options.message
+                          : errors.options.root?.message}
+                      </p>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => append({ text: '' })}
+                      className="w-full"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      {t('addOption')}
+                    </Button>
+                  </>
                 )}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => append({ text: '' })}
-                  className="w-full"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  {t('addOption')}
-                </Button>
               </CardContent>
             </Card>
 
