@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { Mail, Loader2 } from 'lucide-react';
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -21,6 +22,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -37,6 +40,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setEmailNotConfirmed(false);
 
     try {
       const supabase = createClient();
@@ -45,14 +49,45 @@ export default function LoginPage() {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if the error is about email not being confirmed
+        if (error.message.toLowerCase().includes('email not confirmed') || 
+            error.message.toLowerCase().includes('email non confermata')) {
+          setEmailNotConfirmed(true);
+          return;
+        }
+        throw error;
+      }
 
-      toast.success('Welcome back!');
+      toast.success(t('welcomeBack') || 'Welcome back!');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign in');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    setIsResending(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success(t('confirmationResent') || 'Confirmation email sent!');
+    } catch (error: any) {
+      // If resend fails, suggest using forgot password
+      toast.error(t('resendError') || 'Could not resend. Try "Forgot password" instead.');
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -84,6 +119,54 @@ export default function LoginPage() {
               <CardDescription>{t('subtitle')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Email Not Confirmed Warning */}
+              {emailNotConfirmed && (
+                <div className="rounded-lg bg-orange-500/10 border border-orange-500/30 p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Mail className="h-5 w-5 text-orange-500 mt-0.5 shrink-0" />
+                    <div className="space-y-1">
+                      <p className="font-medium text-orange-500">{t('emailNotConfirmed')}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t('emailNotConfirmedDescription')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleResendConfirmation}
+                      disabled={isResending}
+                      className="flex-1"
+                    >
+                      {isResending ? (
+                        <>
+                          <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                          {t('resending')}
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="mr-2 h-3 w-3" />
+                          {t('resendEmail')}
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="flex-1"
+                    >
+                      <Link href="/forgot-password">
+                        {t('useForgotPassword')}
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {/* Social Login */}
               <div className="grid gap-2">
                 <Button
@@ -158,7 +241,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Signing in...' : t('title')}
+                  {isLoading ? t('signingIn') : t('title')}
                 </Button>
               </form>
 

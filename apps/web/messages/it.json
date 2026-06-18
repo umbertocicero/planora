@@ -205,7 +205,16 @@
       "password": "Password",
       "forgotPassword": "Password dimenticata?",
       "noAccount": "Non hai un account?",
-      "signUp": "Registrati"
+      "signUp": "Registrati",
+      "signingIn": "Accesso in corso...",
+      "welcomeBack": "Bentornato!",
+      "emailNotConfirmed": "Email non confermata",
+      "emailNotConfirmedDescription": "Devi confermare la tua email prima di poter accedere. Controlla la tua casella di posta.",
+      "resendEmail": "Reinvia email",
+      "resending": "Invio in corso...",
+      "confirmationResent": "Email di conferma inviata!",
+      "resendError": "Impossibile reinviare. Prova 'Password dimenticata'.",
+      "useForgotPassword": "Usa password dimenticata"
     },
     "signup": {
       "title": "Crea un account",
@@ -230,6 +239,37 @@
       "instructions": "Clicca sul link nell'email per attivare il tuo account e iniziare a usare Planora.",
       "spam": "Non trovi l'email? Controlla la cartella spam.",
       "backToLogin": "Torna al login"
+    },
+    "forgotPassword": {
+      "title": "Password dimenticata",
+      "subtitle": "Inserisci la tua email e ti invieremo un link per reimpostare la password.",
+      "email": "Email",
+      "sendLink": "Invia link di reset",
+      "sending": "Invio in corso...",
+      "emailSent": "Email inviata!",
+      "checkEmail": "Controlla la tua email",
+      "emailSentTo": "Abbiamo inviato un link di reset a",
+      "checkSpam": "Non trovi l'email? Controlla la cartella spam.",
+      "tryAgain": "Riprova",
+      "backToLogin": "Torna al login",
+      "error": "Errore nell'invio dell'email",
+      "notReceived": "Non hai ricevuto l'email?",
+      "notReceivedTip": "Se non hai ricevuto l'email di conferma durante la registrazione, puoi usare questa funzione per attivare il tuo account."
+    },
+    "resetPassword": {
+      "title": "Reimposta password",
+      "subtitle": "Inserisci la tua nuova password",
+      "newPassword": "Nuova password",
+      "confirmPassword": "Conferma password",
+      "updatePassword": "Aggiorna password",
+      "updating": "Aggiornamento...",
+      "success": "Password aggiornata!",
+      "successTitle": "Password aggiornata con successo",
+      "redirecting": "Reindirizzamento alla dashboard...",
+      "error": "Errore nell'aggiornamento della password",
+      "invalidLink": "Link non valido o scaduto",
+      "invalidLinkDescription": "Il link per reimpostare la password non è valido o è scaduto. Richiedi un nuovo link.",
+      "requestNewLink": "Richiedi nuovo link"
     }
   },
   "errors": {

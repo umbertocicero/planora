@@ -205,7 +205,16 @@
       "password": "Password",
       "forgotPassword": "Forgot password?",
       "noAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "signUp": "Sign up",
+      "signingIn": "Signing in...",
+      "welcomeBack": "Welcome back!",
+      "emailNotConfirmed": "Email not confirmed",
+      "emailNotConfirmedDescription": "You need to confirm your email before you can sign in. Check your inbox.",
+      "resendEmail": "Resend email",
+      "resending": "Sending...",
+      "confirmationResent": "Confirmation email sent!",
+      "resendError": "Could not resend. Try 'Forgot password' instead.",
+      "useForgotPassword": "Use forgot password"
     },
     "signup": {
       "title": "Create an account",
@@ -230,6 +239,37 @@
       "instructions": "Click the link in the email to activate your account and start using Planora.",
       "spam": "Can't find the email? Check your spam folder.",
       "backToLogin": "Back to login"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email and we'll send you a link to reset your password.",
+      "email": "Email",
+      "sendLink": "Send reset link",
+      "sending": "Sending...",
+      "emailSent": "Email sent!",
+      "checkEmail": "Check your email",
+      "emailSentTo": "We've sent a reset link to",
+      "checkSpam": "Can't find the email? Check your spam folder.",
+      "tryAgain": "Try again",
+      "backToLogin": "Back to login",
+      "error": "Error sending email",
+      "notReceived": "Didn't receive the email?",
+      "notReceivedTip": "If you didn't receive the confirmation email during registration, you can use this feature to activate your account."
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter your new password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "updatePassword": "Update password",
+      "updating": "Updating...",
+      "success": "Password updated!",
+      "successTitle": "Password updated successfully",
+      "redirecting": "Redirecting to dashboard...",
+      "error": "Error updating password",
+      "invalidLink": "Invalid or expired link",
+      "invalidLinkDescription": "The password reset link is invalid or has expired. Please request a new link.",
+      "requestNewLink": "Request new link"
     }
   },
   "errors": {
