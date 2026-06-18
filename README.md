@@ -211,50 +211,6 @@ Nel dashboard Supabase → Authentication → Providers:
 
 > ⚠️ **IMPORTANTE**: Il file `.env.local` deve essere creato in **`apps/web/.env.local`**, NON nella root del progetto!
 
-```bash
-# Crea il file nella posizione corretta:
-# Da terminale nella root del progetto:
-cat > apps/web/.env.local << 'EOF'
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-# App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Email (Resend)
-RESEND_API_KEY=re_xxxxxxxxxxxxx
-
-# OAuth (opzionale)
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-APPLE_CLIENT_ID=
-APPLE_CLIENT_SECRET=
-EOF
-```
-
-Oppure crea manualmente il file `apps/web/.env.local` con questo contenuto:
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-# App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Email (Resend)
-RESEND_API_KEY=re_xxxxxxxxxxxxx
-
-# OAuth (opzionale)
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-APPLE_CLIENT_ID=
-APPLE_CLIENT_SECRET=
-```
-
 ---
 
 ## 💻 Sviluppo
