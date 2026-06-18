@@ -225,6 +225,8 @@
       "confirmPassword": "Confirm Password",
       "creating": "Creating account...",
       "checkEmail": "Check your email for the confirmation link!",
+      "emailRateLimit": "Too many email requests in a short time. Please wait about 60 seconds and try again.",
+      "signupError": "Could not complete sign up.",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
     },

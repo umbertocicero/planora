@@ -71,7 +71,14 @@ export default function SignupPage() {
       // Redirect to confirmation page
       router.push('/signup/confirm');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to sign up');
+      const errorMessage = (error?.message || '').toLowerCase();
+      const isRateLimited = error?.status === 429 || errorMessage.includes('rate limit');
+
+      if (isRateLimited) {
+        toast.error(t('emailRateLimit'));
+      } else {
+        toast.error(error.message || t('signupError'));
+      }
     } finally {
       setIsLoading(false);
     }

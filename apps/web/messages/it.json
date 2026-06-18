@@ -225,6 +225,8 @@
       "confirmPassword": "Conferma Password",
       "creating": "Creando account...",
       "checkEmail": "Controlla la tua email per confermare la registrazione!",
+      "emailRateLimit": "Hai richiesto troppe email in poco tempo. Attendi circa 60 secondi e riprova.",
+      "signupError": "Impossibile completare la registrazione.",
       "hasAccount": "Hai già un account?",
       "signIn": "Accedi"
     },
