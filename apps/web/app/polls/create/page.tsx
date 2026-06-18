@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PollDatePicker } from '@/components/poll-date-picker';
 import {
   Card,
   CardContent,
@@ -328,56 +329,19 @@ export default function CreatePollPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {isCalendar ? (
-                  // Calendar date/time options
+                  // Calendar date/time picker
                   <>
-                    {dateFields.map((field, index) => (
-                      <div key={field.id} className="flex flex-col gap-2 rounded-lg border p-4 sm:flex-row sm:items-end">
-                        <div className="flex-1">
-                          <Label className="text-sm text-muted-foreground">
-                            <Calendar className="mr-1 inline h-3 w-3" />
-                            {t('date')}
-                          </Label>
-                          <Input
-                            type="date"
-                            {...register(`dateOptions.${index}.date`)}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <Label className="text-sm text-muted-foreground">
-                            <Clock className="mr-1 inline h-3 w-3" />
-                            {t('startTime')}
-                          </Label>
-                          <Input
-                            type="time"
-                            {...register(`dateOptions.${index}.startTime`)}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <Label className="text-sm text-muted-foreground">
-                            <Clock className="mr-1 inline h-3 w-3" />
-                            {t('endTime')}
-                          </Label>
-                          <Input
-                            type="time"
-                            {...register(`dateOptions.${index}.endTime`)}
-                            className="mt-1"
-                          />
-                        </div>
-                        {dateFields.length > 2 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeDate(index)}
-                            className="shrink-0"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
+                    <Controller
+                      control={control}
+                      name="dateOptions"
+                      render={({ field }) => (
+                        <PollDatePicker
+                          value={field.value || []}
+                          onChange={field.onChange}
+                          minDates={2}
+                        />
+                      )}
+                    />
                     {errors.dateOptions && (
                       <p className="text-sm text-destructive">
                         {typeof errors.dateOptions === 'object' && 'message' in errors.dateOptions
@@ -385,15 +349,6 @@ export default function CreatePollPage() {
                           : errors.dateOptions.root?.message}
                       </p>
                     )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => appendDate({ date: '', startTime: '', endTime: '' })}
-                      className="w-full"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      {t('addDate')}
-                    </Button>
                   </>
                 ) : (
                   // Regular text options
