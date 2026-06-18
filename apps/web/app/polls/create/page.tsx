@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Plus, Trash2, CheckCircle2, ListChecks, Calendar, Clock } from 'lucide-react';
@@ -187,7 +187,7 @@ export default function CreatePollPage() {
             <h1 className="text-3xl font-bold">{t('title')}</h1>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Validation errors:', errors))} className="space-y-8">
             {/* Poll Type Selection */}
             <Card>
               <CardHeader>
@@ -385,29 +385,47 @@ export default function CreatePollPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allowAnonymous"
-                    {...register('allowAnonymous')}
-                    defaultChecked
+                  <Controller
+                    name="allowAnonymous"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        id="allowAnonymous"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
                   />
                   <Label htmlFor="allowAnonymous">{t('allowAnonymous')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="requireName"
-                    {...register('requireName')}
-                    defaultChecked
+                  <Controller
+                    name="requireName"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        id="requireName"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
                   />
                   <Label htmlFor="requireName">{t('requireName')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="showResultsBeforeVote"
-                    {...register('showResultsBeforeVote')}
-                    defaultChecked
+                  <Controller
+                    name="showResultsBeforeVote"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        id="showResultsBeforeVote"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
                   />
                   <Label htmlFor="showResultsBeforeVote">
-                    Show results before voting
+                    {t('showResultsBeforeVote') || 'Show results before voting'}
                   </Label>
                 </div>
               </CardContent>

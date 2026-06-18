@@ -77,6 +77,7 @@
       "allowAnonymous": "Allow anonymous voting",
       "setExpiration": "Set expiration date",
       "requireName": "Require participant name",
+      "showResultsBeforeVote": "Show results before voting",
       "createPoll": "Create Poll",
       "pollCreated": "Poll created successfully!",
       "createError": "Failed to create poll"
