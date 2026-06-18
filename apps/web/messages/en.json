@@ -80,7 +80,12 @@
       "showResultsBeforeVote": "Show results before voting",
       "createPoll": "Create Poll",
       "pollCreated": "Poll created successfully!",
-      "createError": "Failed to create poll"
+      "createError": "Failed to create poll",
+      "editTitle": "Edit Poll",
+      "pollUpdated": "Poll updated successfully!",
+      "updateError": "Failed to update poll",
+      "savePoll": "Save Changes",
+      "cancel": "Cancel"
     },
     "vote": {
       "title": "Cast Your Vote",

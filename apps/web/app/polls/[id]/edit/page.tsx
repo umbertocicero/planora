@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Trash2, CheckCircle2, ListChecks, Calendar, Clock, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Calendar, Clock, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { User } from '@supabase/supabase-js';
 
@@ -25,40 +25,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 
-const pollTypes = [
-  {
-    id: 'single_choice',
-    icon: CheckCircle2,
-    color: 'text-primary',
-    bgColor: 'bg-primary/10',
-  },
-  {
-    id: 'multiple_choice',
-    icon: ListChecks,
-    color: 'text-secondary',
-    bgColor: 'bg-secondary/10',
-  },
-  {
-    id: 'calendar',
-    icon: Calendar,
-    color: 'text-accent',
-    bgColor: 'bg-accent/10',
-  },
-] as const;
-
-const createPollSchema = z.object({
+const editPollSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
   description: z.string().max(2000).optional(),
-  pollType: z.enum(['single_choice', 'multiple_choice', 'calendar']),
   options: z.array(
     z.object({
+      id: z.string().optional(),
       text: z.string(),
     })
   ).optional(),
   dateOptions: z.array(
     z.object({
+      id: z.string().optional(),
       date: z.string().optional(),
       startTime: z.string().optional(),
       endTime: z.string().optional(),
@@ -67,58 +46,53 @@ const createPollSchema = z.object({
   allowAnonymous: z.boolean().default(true),
   requireName: z.boolean().default(true),
   showResultsBeforeVote: z.boolean().default(true),
-}).refine(
-  (data) => {
-    if (data.pollType === 'calendar') {
-      // For calendar: need at least 2 date options with valid dates
-      const validDates = data.dateOptions?.filter(opt => opt.date && opt.date.length > 0) || [];
-      return validDates.length >= 2;
-    }
-    // For single/multiple choice: need at least 2 options with text
-    const validOptions = data.options?.filter(opt => opt.text && opt.text.trim().length > 0) || [];
-    return validOptions.length >= 2;
-  },
-  { message: 'At least 2 options required', path: ['options'] }
-);
+});
 
-type CreatePollForm = z.infer<typeof createPollSchema>;
+type EditPollForm = z.infer<typeof editPollSchema>;
 
-export default function CreatePollPage() {
+interface Poll {
+  id: string;
+  short_id: string;
+  creator_id: string | null;
+  title: string;
+  description: string | null;
+  poll_type: 'single_choice' | 'multiple_choice' | 'calendar';
+  allow_anonymous: boolean;
+  require_name: boolean;
+  show_results_before_vote: boolean;
+  status: string;
+}
+
+interface PollOption {
+  id: string;
+  text: string | null;
+  date: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  sort_order: number;
+}
+
+export default function EditPollPage() {
   const t = useTranslations('poll.create');
-  const tTypes = useTranslations('poll.types');
   const router = useRouter();
+  const params = useParams();
+  const pollId = params.id as string;
+
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        router.push('/login?redirect=/polls/create');
-        return;
-      }
-      
-      setUser(user);
-      setIsLoading(false);
-    };
-    
-    checkAuth();
-  }, [router]);
+  const [poll, setPoll] = useState<Poll | null>(null);
+  const [originalOptions, setOriginalOptions] = useState<PollOption[]>([]);
 
   const {
     register,
     control,
     handleSubmit,
-    watch,
-    setValue,
+    reset,
     formState: { errors },
-  } = useForm<CreatePollForm>({
-    resolver: zodResolver(createPollSchema),
+  } = useForm<EditPollForm>({
+    resolver: zodResolver(editPollSchema),
     defaultValues: {
-      pollType: 'single_choice',
       options: [{ text: '' }, { text: '' }],
       dateOptions: [{ date: '', startTime: '', endTime: '' }, { date: '', startTime: '', endTime: '' }],
       allowAnonymous: true,
@@ -137,53 +111,112 @@ export default function CreatePollPage() {
     name: 'dateOptions',
   });
 
-  const selectedType = watch('pollType');
-  const isCalendar = selectedType === 'calendar';
+  useEffect(() => {
+    const loadPoll = async () => {
+      const supabase = createClient();
 
-  const onSubmit = async (data: CreatePollForm) => {
-    if (!user) {
-      toast.error('You must be logged in to create a poll');
-      return;
-    }
-    
+      // Check auth
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/login?redirect=/polls/' + pollId + '/edit');
+        return;
+      }
+      setUser(user);
+
+      // Load poll
+      const { data: pollData, error: pollError } = await supabase
+        .from('polls')
+        .select('*')
+        .eq('short_id', pollId)
+        .single();
+
+      if (pollError || !pollData) {
+        toast.error('Poll not found');
+        router.push('/dashboard');
+        return;
+      }
+
+      // Check ownership
+      if (pollData.creator_id !== user.id) {
+        toast.error('You are not the owner of this poll');
+        router.push('/polls/' + pollId);
+        return;
+      }
+
+      setPoll(pollData);
+
+      // Load options
+      const { data: optionsData } = await supabase
+        .from('poll_options')
+        .select('*')
+        .eq('poll_id', pollData.id)
+        .order('sort_order');
+
+      setOriginalOptions(optionsData || []);
+
+      // Set form values
+      const isCalendar = pollData.poll_type === 'calendar';
+
+      reset({
+        title: pollData.title,
+        description: pollData.description || '',
+        allowAnonymous: pollData.allow_anonymous,
+        requireName: pollData.require_name,
+        showResultsBeforeVote: pollData.show_results_before_vote,
+        options: isCalendar ? [] : (optionsData || []).map(opt => ({
+          id: opt.id,
+          text: opt.text || '',
+        })),
+        dateOptions: isCalendar ? (optionsData || []).map(opt => ({
+          id: opt.id,
+          date: opt.date || '',
+          startTime: opt.start_time || '',
+          endTime: opt.end_time || '',
+        })) : [],
+      });
+
+      setIsLoading(false);
+    };
+
+    loadPoll();
+  }, [pollId, router, reset]);
+
+  const onSubmit = async (data: EditPollForm) => {
+    if (!poll || !user) return;
+
     setIsSubmitting(true);
     try {
       const supabase = createClient();
-      
-      // Create the poll
-      const { data: poll, error: pollError } = await supabase
+
+      // Update poll
+      const { error: pollError } = await supabase
         .from('polls')
-        .insert({
-          creator_id: user.id,
+        .update({
           title: data.title,
           description: data.description || null,
-          poll_type: data.pollType,
           allow_anonymous: data.allowAnonymous,
           require_name: data.requireName,
           show_results_before_vote: data.showResultsBeforeVote,
-          status: 'active',
+          updated_at: new Date().toISOString(),
         })
-        .select()
-        .single();
+        .eq('id', poll.id);
 
       if (pollError) {
-        console.error('Error creating poll:', pollError);
         throw new Error(pollError.message);
       }
 
-      // Create poll options (filter out empty ones)
-      // Both branches need same shape for TypeScript
-      let optionsToInsert: {
-        poll_id: string;
-        text: string | null;
-        date: string | null;
-        start_time: string | null;
-        end_time: string | null;
-        sort_order: number;
-      }[];
+      // Update options
+      const isCalendar = poll.poll_type === 'calendar';
 
-      if (data.pollType === 'calendar') {
-        optionsToInsert = (data.dateOptions || [])
+      if (isCalendar) {
+        // Delete existing options
+        await supabase
+          .from('poll_options')
+          .delete()
+          .eq('poll_id', poll.id);
+
+        // Insert new options
+        const optionsToInsert = (data.dateOptions || [])
           .filter(opt => opt.date && opt.date.length > 0)
           .map((opt, index) => ({
             poll_id: poll.id,
@@ -193,8 +226,23 @@ export default function CreatePollPage() {
             end_time: opt.endTime || null,
             sort_order: index,
           }));
+
+        if (optionsToInsert.length > 0) {
+          const { error: optionsError } = await supabase
+            .from('poll_options')
+            .insert(optionsToInsert);
+
+          if (optionsError) throw new Error(optionsError.message);
+        }
       } else {
-        optionsToInsert = (data.options || [])
+        // Delete existing options
+        await supabase
+          .from('poll_options')
+          .delete()
+          .eq('poll_id', poll.id);
+
+        // Insert new options
+        const optionsToInsert = (data.options || [])
           .filter(opt => opt.text && opt.text.trim().length > 0)
           .map((opt, index) => ({
             poll_id: poll.id,
@@ -204,24 +252,21 @@ export default function CreatePollPage() {
             end_time: null,
             sort_order: index,
           }));
+
+        if (optionsToInsert.length > 0) {
+          const { error: optionsError } = await supabase
+            .from('poll_options')
+            .insert(optionsToInsert);
+
+          if (optionsError) throw new Error(optionsError.message);
+        }
       }
 
-      const { error: optionsError } = await supabase
-        .from('poll_options')
-        .insert(optionsToInsert);
-
-      if (optionsError) {
-        console.error('Error creating options:', optionsError);
-        // Rollback: delete the poll if options failed
-        await supabase.from('polls').delete().eq('id', poll.id);
-        throw new Error(optionsError.message);
-      }
-
-      toast.success(t('pollCreated') || 'Poll created successfully!');
+      toast.success(t('pollUpdated') || 'Poll updated successfully!');
       router.push(`/polls/${poll.short_id}`);
     } catch (error) {
-      console.error('Failed to create poll:', error);
-      toast.error(t('createError') || 'Failed to create poll');
+      console.error('Failed to update poll:', error);
+      toast.error(t('updateError') || 'Failed to update poll');
     } finally {
       setIsSubmitting(false);
     }
@@ -239,6 +284,12 @@ export default function CreatePollPage() {
     );
   }
 
+  if (!poll) {
+    return null;
+  }
+
+  const isCalendar = poll.poll_type === 'calendar';
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -246,45 +297,10 @@ export default function CreatePollPage() {
       <main className="flex-1 py-12">
         <div className="container mx-auto max-w-2xl px-4">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold">{t('title')}</h1>
+            <h1 className="text-3xl font-bold">{t('editTitle') || 'Edit Poll'}</h1>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Validation errors:', errors))} className="space-y-8">
-            {/* Poll Type Selection */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">{t('pollType')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-4">
-                  {pollTypes.map((type) => {
-                    const Icon = type.icon;
-                    const isSelected = selectedType === type.id;
-                    return (
-                      <button
-                        key={type.id}
-                        type="button"
-                        onClick={() => setValue('pollType', type.id)}
-                        className={cn(
-                          'flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all',
-                          isSelected
-                            ? 'border-primary bg-primary/5'
-                            : 'border-transparent bg-muted hover:border-muted-foreground/20'
-                        )}
-                      >
-                        <div className={cn('rounded-lg p-2', type.bgColor)}>
-                          <Icon className={cn('h-6 w-6', type.color)} />
-                        </div>
-                        <span className="text-sm font-medium">
-                          {tTypes(type.id)}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Poll Details */}
             <Card>
               <CardHeader>
@@ -328,7 +344,6 @@ export default function CreatePollPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {isCalendar ? (
-                  // Calendar date/time options
                   <>
                     {dateFields.map((field, index) => (
                       <div key={field.id} className="flex flex-col gap-2 rounded-lg border p-4 sm:flex-row sm:items-end">
@@ -378,13 +393,6 @@ export default function CreatePollPage() {
                         )}
                       </div>
                     ))}
-                    {errors.dateOptions && (
-                      <p className="text-sm text-destructive">
-                        {typeof errors.dateOptions === 'object' && 'message' in errors.dateOptions
-                          ? errors.dateOptions.message
-                          : errors.dateOptions.root?.message}
-                      </p>
-                    )}
                     <Button
                       type="button"
                       variant="outline"
@@ -396,16 +404,12 @@ export default function CreatePollPage() {
                     </Button>
                   </>
                 ) : (
-                  // Regular text options
                   <>
                     {fields.map((field, index) => (
                       <div key={field.id} className="flex gap-2">
                         <Input
                           {...register(`options.${index}.text`)}
                           placeholder={t('optionPlaceholder', { number: index + 1 })}
-                          className={
-                            errors.options?.[index]?.text ? 'border-destructive' : ''
-                          }
                         />
                         {fields.length > 2 && (
                           <Button
@@ -419,13 +423,6 @@ export default function CreatePollPage() {
                         )}
                       </div>
                     ))}
-                    {errors.options && (
-                      <p className="text-sm text-destructive">
-                        {typeof errors.options === 'object' && 'message' in errors.options
-                          ? errors.options.message
-                          : errors.options.root?.message}
-                      </p>
-                    )}
                     <Button
                       type="button"
                       variant="outline"
@@ -494,14 +491,23 @@ export default function CreatePollPage() {
             </Card>
 
             {/* Submit */}
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : t('createPoll')}
-            </Button>
+            <div className="flex gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={() => router.back()}
+              >
+                {t('cancel') || 'Cancel'}
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving...' : (t('savePoll') || 'Save Changes')}
+              </Button>
+            </div>
           </form>
         </div>
       </main>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
 import {
@@ -13,7 +13,9 @@ import {
   Mail,
   MessageCircle,
   Loader2,
+  Pencil,
 } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
 
 import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
@@ -45,6 +47,7 @@ interface PollOption {
 interface Poll {
   id: string;
   short_id: string;
+  creator_id: string | null;
   title: string;
   description: string | null;
   poll_type: 'single_choice' | 'multiple_choice' | 'calendar';
@@ -63,6 +66,7 @@ interface VoteResult {
 export default function PollVotePage() {
   const t = useTranslations();
   const params = useParams();
+  const router = useRouter();
   const pollId = params.id as string;
 
   const [poll, setPoll] = useState<Poll | null>(null);
@@ -77,6 +81,7 @@ export default function PollVotePage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   
   // Validation errors
   const [nameError, setNameError] = useState(false);
@@ -136,8 +141,16 @@ export default function PollVotePage() {
   }, [pollId]);
 
   useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUser(user);
+    };
+    checkUser();
     fetchPollData();
   }, [fetchPollData]);
+
+  const isOwner = poll && currentUser && poll.creator_id === currentUser.id;
 
   const handleVote = async () => {
     if (!poll) return;
@@ -252,10 +265,25 @@ export default function PollVotePage() {
         <div className="container mx-auto max-w-2xl px-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">{poll.title}</CardTitle>
-              {poll.description && (
-                <CardDescription>{poll.description}</CardDescription>
-              )}
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-2xl">{poll.title}</CardTitle>
+                  {poll.description && (
+                    <CardDescription>{poll.description}</CardDescription>
+                  )}
+                </div>
+                {isOwner && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => router.push(`/polls/${poll.short_id}/edit`)}
+                    className="ml-4 shrink-0"
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    {t('common.edit')}
+                  </Button>
+                )}
+              </div>
             </CardHeader>
 
             <CardContent className="space-y-6">

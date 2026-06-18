@@ -80,7 +80,12 @@
       "showResultsBeforeVote": "Mostra risultati prima del voto",
       "createPoll": "Crea Sondaggio",
       "pollCreated": "Sondaggio creato con successo!",
-      "createError": "Errore nella creazione del sondaggio"
+      "createError": "Errore nella creazione del sondaggio",
+      "editTitle": "Modifica Sondaggio",
+      "pollUpdated": "Sondaggio aggiornato con successo!",
+      "updateError": "Errore nell'aggiornamento del sondaggio",
+      "savePoll": "Salva Modifiche",
+      "cancel": "Annulla"
     },
     "vote": {
       "title": "Esprimi il Tuo Voto",
