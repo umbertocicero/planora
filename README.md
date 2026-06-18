@@ -123,10 +123,17 @@
    - Clicca **Code** → **Codespaces** → **Create codespace on main**
    - Attendi 2-3 minuti per il setup automatico
 
-3. **Tutto pronto!**
-   - Le dipendenze sono installate automaticamente
-   - VS Code si apre nel browser
-   - Esegui `pnpm dev` per avviare
+3. **Configura le variabili d'ambiente**
+   ```bash
+   # Crea il file .env.local nella cartella apps/web/
+   cp .env.example apps/web/.env.local
+   # Poi modifica apps/web/.env.local con le tue credenziali Supabase
+   ```
+
+4. **Avvia l'applicazione**
+   ```bash
+   pnpm dev
+   ```
 
 ### Metodo 2: Installazione Locale
 
@@ -141,10 +148,10 @@ npm install -g pnpm
 # 3. Installa dipendenze
 pnpm install
 
-# 4. Copia le variabili d'ambiente
-cp .env.example .env.local
+# 4. Crea le variabili d'ambiente (IMPORTANTE: in apps/web/)
+cp .env.example apps/web/.env.local
 
-# 5. Configura Supabase (vedi sezione successiva)
+# 5. Modifica apps/web/.env.local con le tue credenziali Supabase
 
 # 6. Avvia in sviluppo
 pnpm dev
@@ -195,12 +202,39 @@ Nel dashboard Supabase → Authentication → Providers:
 
 1. Crea account su [resend.com](https://resend.com)
 2. Genera API Key
-3. Aggiungi a `.env.local`:
+3. Aggiungi a `apps/web/.env.local`:
    ```env
    RESEND_API_KEY=re_xxxxxxxxxxxxx
    ```
 
 ### 4. File .env.local completo
+
+> ⚠️ **IMPORTANTE**: Il file `.env.local` deve essere creato in **`apps/web/.env.local`**, NON nella root del progetto!
+
+```bash
+# Crea il file nella posizione corretta:
+# Da terminale nella root del progetto:
+cat > apps/web/.env.local << 'EOF'
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Email (Resend)
+RESEND_API_KEY=re_xxxxxxxxxxxxx
+
+# OAuth (opzionale)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+APPLE_CLIENT_ID=
+APPLE_CLIENT_SECRET=
+EOF
+```
+
+Oppure crea manualmente il file `apps/web/.env.local` con questo contenuto:
 
 ```env
 # Supabase

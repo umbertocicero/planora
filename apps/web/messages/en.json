@@ -52,8 +52,8 @@
   },
   "poll": {
     "types": {
-      "single": "Single Choice",
-      "multiple": "Multiple Choice",
+      "single_choice": "Single Choice",
+      "multiple_choice": "Multiple Choice",
       "calendar": "Calendar Poll"
     },
     "create": {

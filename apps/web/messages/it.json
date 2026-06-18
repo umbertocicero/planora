@@ -52,8 +52,8 @@
   },
   "poll": {
     "types": {
-      "single": "Scelta Singola",
-      "multiple": "Scelta Multipla",
+      "single_choice": "Scelta Singola",
+      "multiple_choice": "Scelta Multipla",
       "calendar": "Sondaggio Calendario"
     },
     "create": {
