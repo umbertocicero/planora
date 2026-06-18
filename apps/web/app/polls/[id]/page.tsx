@@ -319,21 +319,33 @@ export default function PollVotePage() {
         saveVoterName(voterName.trim());
       }
 
-      let votes;
-      
+      type VoteInsertPayload = {
+        poll_id: string;
+        option_id: string;
+        voter_name: string | null;
+        user_id: string | null;
+        voter_fingerprint: string | null;
+        is_not_available: boolean;
+      };
+
+      let voteError: { message: string } | null = null;
+
       if (notAvailable) {
-        // Insert "not available" response
-        votes = [{
-          poll_id: poll.id,
-          option_id: null,
-          voter_name: voterName.trim() || null,
-          user_id: currentUser?.id || null,
-          voter_fingerprint: currentUser ? null : anonymousFingerprint,
-          is_not_available: true,
-        }];
+        // Insert "not available" response (option_id intentionally null)
+        const { error } = await supabase
+          .from('votes')
+          .insert([{
+            poll_id: poll.id,
+            option_id: null,
+            voter_name: voterName.trim() || null,
+            user_id: currentUser?.id || null,
+            voter_fingerprint: currentUser ? null : anonymousFingerprint,
+            is_not_available: true,
+          }] as unknown as VoteInsertPayload[]);
+        voteError = error;
       } else {
         // Insert regular votes
-        votes = selectedOptions.map(optionId => ({
+        const votes = selectedOptions.map(optionId => ({
           poll_id: poll.id,
           option_id: optionId,
           voter_name: voterName.trim() || null,
@@ -341,11 +353,12 @@ export default function PollVotePage() {
           voter_fingerprint: currentUser ? null : anonymousFingerprint,
           is_not_available: false,
         }));
-      }
 
-      const { error: voteError } = await supabase
-        .from('votes')
-        .insert(votes);
+        const { error } = await supabase
+          .from('votes')
+          .insert(votes);
+        voteError = error;
+      }
 
       if (voteError) throw new Error(voteError.message);
 
@@ -449,21 +462,33 @@ export default function PollVotePage() {
       }
 
       // Insert new votes
-      let votes;
-      
+      type VoteInsertPayload = {
+        poll_id: string;
+        option_id: string;
+        voter_name: string | null;
+        user_id: string | null;
+        voter_fingerprint: string | null;
+        is_not_available: boolean;
+      };
+
+      let voteError: { message: string } | null = null;
+
       if (notAvailable) {
-        // Insert "not available" response
-        votes = [{
-          poll_id: poll.id,
-          option_id: null,
-          voter_name: voterName.trim() || null,
-          user_id: currentUser?.id || null,
-          voter_fingerprint: currentUser ? null : anonymousFingerprint,
-          is_not_available: true,
-        }];
+        // Insert "not available" response (option_id intentionally null)
+        const { error } = await supabase
+          .from('votes')
+          .insert([{
+            poll_id: poll.id,
+            option_id: null,
+            voter_name: voterName.trim() || null,
+            user_id: currentUser?.id || null,
+            voter_fingerprint: currentUser ? null : anonymousFingerprint,
+            is_not_available: true,
+          }] as unknown as VoteInsertPayload[]);
+        voteError = error;
       } else {
         // Insert regular votes
-        votes = selectedOptions.map(optionId => ({
+        const votes = selectedOptions.map(optionId => ({
           poll_id: poll.id,
           option_id: optionId,
           voter_name: voterName.trim() || null,
@@ -471,11 +496,12 @@ export default function PollVotePage() {
           voter_fingerprint: currentUser ? null : anonymousFingerprint,
           is_not_available: false,
         }));
-      }
 
-      const { error: voteError } = await supabase
-        .from('votes')
-        .insert(votes);
+        const { error } = await supabase
+          .from('votes')
+          .insert(votes);
+        voteError = error;
+      }
 
       if (voteError) throw new Error(voteError.message);
 
