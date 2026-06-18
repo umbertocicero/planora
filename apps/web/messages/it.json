@@ -79,25 +79,39 @@
       "requireName": "Richiedi nome del partecipante",
       "showResultsBeforeVote": "Mostra risultati prima del voto",
       "createPoll": "Crea Sondaggio",
+      "creating": "Creazione...",
       "pollCreated": "Sondaggio creato con successo!",
       "createError": "Errore nella creazione del sondaggio",
       "editTitle": "Modifica Sondaggio",
       "pollUpdated": "Sondaggio aggiornato con successo!",
       "updateError": "Errore nell'aggiornamento del sondaggio",
       "savePoll": "Salva Modifiche",
+      "saving": "Salvataggio...",
       "cancel": "Annulla"
     },
     "vote": {
       "title": "Esprimi il Tuo Voto",
       "yourName": "Il Tuo Nome",
       "namePlaceholder": "Inserisci il tuo nome",
+      "nameAutoFilled": "Nome compilato automaticamente dal tuo account",
+      "nameRequired": "Per favore inserisci il tuo nome",
       "selectOption": "Seleziona un'opzione",
       "selectOptions": "Seleziona le opzioni",
+      "selectionRequired": "Per favore seleziona almeno un'opzione",
       "submitVote": "Invia Voto",
       "voteRecorded": "Il tuo voto è stato registrato!",
       "alreadyVoted": "Hai già votato",
       "voteDeleted": "Il tuo voto è stato eliminato",
-      "voteModified": "Il tuo voto è stato aggiornato"
+      "voteModified": "Il tuo voto è stato aggiornato",
+      "yourVote": "Il tuo voto",
+      "modifyVote": "Modifica voto",
+      "deleteVote": "Elimina voto",
+      "saveChanges": "Salva modifiche",
+      "saving": "Salvataggio...",
+      "sending": "Invio in corso...",
+      "voteError": "Errore durante l'invio del voto",
+      "deleteError": "Errore durante l'eliminazione del voto",
+      "modifyError": "Errore durante la modifica del voto"
     },
     "results": {
       "title": "Risultati",
@@ -184,6 +198,8 @@
     "passwordMin": "La password deve avere almeno 8 caratteri",
     "passwordMatch": "Le password non corrispondono",
     "pollNotFound": "Sondaggio non trovato",
-    "unauthorized": "Non sei autorizzato a eseguire questa azione"
+    "pollNotFoundDescription": "Questo sondaggio potrebbe essere stato eliminato o il link non è corretto.",
+    "unauthorized": "Non sei autorizzato a eseguire questa azione",
+    "notOwner": "Non sei il proprietario di questo sondaggio"
   }
 }

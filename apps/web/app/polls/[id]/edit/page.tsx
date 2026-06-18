@@ -73,7 +73,7 @@ interface PollOption {
 }
 
 export default function EditPollPage() {
-  const t = useTranslations('poll.create');
+  const t = useTranslations('poll.create');\n  const tErrors = useTranslations('errors');
   const router = useRouter();
   const params = useParams();
   const pollId = params.id as string;
@@ -131,14 +131,14 @@ export default function EditPollPage() {
         .single();
 
       if (pollError || !pollData) {
-        toast.error('Poll not found');
+        toast.error(tErrors('pollNotFound'));
         router.push('/dashboard');
         return;
       }
 
       // Check ownership
       if (pollData.creator_id !== user.id) {
-        toast.error('You are not the owner of this poll');
+        toast.error(tErrors('notOwner'));
         router.push('/polls/' + pollId);
         return;
       }
@@ -262,11 +262,11 @@ export default function EditPollPage() {
         }
       }
 
-      toast.success(t('pollUpdated') || 'Poll updated successfully!');
+      toast.success(t('pollUpdated'));
       router.push(`/polls/${poll.short_id}`);
     } catch (error) {
       console.error('Failed to update poll:', error);
-      toast.error(t('updateError') || 'Failed to update poll');
+      toast.error(t('updateError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -484,7 +484,7 @@ export default function EditPollPage() {
                     )}
                   />
                   <Label htmlFor="showResultsBeforeVote">
-                    {t('showResultsBeforeVote') || 'Show results before voting'}
+                    {t('showResultsBeforeVote')}
                   </Label>
                 </div>
               </CardContent>
@@ -498,14 +498,14 @@ export default function EditPollPage() {
                 className="flex-1"
                 onClick={() => router.back()}
               >
-                {t('cancel') || 'Cancel'}
+                {t('cancel')}
               </Button>
               <Button
                 type="submit"
                 className="flex-1"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Saving...' : (t('savePoll') || 'Save Changes')}
+                {isSubmitting ? t('saving') : t('savePoll')}
               </Button>
             </div>
           </form>

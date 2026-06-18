@@ -79,25 +79,39 @@
       "requireName": "Require participant name",
       "showResultsBeforeVote": "Show results before voting",
       "createPoll": "Create Poll",
+      "creating": "Creating...",
       "pollCreated": "Poll created successfully!",
       "createError": "Failed to create poll",
       "editTitle": "Edit Poll",
       "pollUpdated": "Poll updated successfully!",
       "updateError": "Failed to update poll",
       "savePoll": "Save Changes",
+      "saving": "Saving...",
       "cancel": "Cancel"
     },
     "vote": {
       "title": "Cast Your Vote",
       "yourName": "Your Name",
       "namePlaceholder": "Enter your name",
+      "nameAutoFilled": "Name auto-filled from your account",
+      "nameRequired": "Please enter your name",
       "selectOption": "Select an option",
       "selectOptions": "Select options",
+      "selectionRequired": "Please select at least one option",
       "submitVote": "Submit Vote",
       "voteRecorded": "Your vote has been recorded!",
       "alreadyVoted": "You have already voted",
       "voteDeleted": "Your vote has been deleted",
-      "voteModified": "Your vote has been updated"
+      "voteModified": "Your vote has been updated",
+      "yourVote": "Your vote",
+      "modifyVote": "Modify vote",
+      "deleteVote": "Delete vote",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "sending": "Sending...",
+      "voteError": "Failed to submit vote",
+      "deleteError": "Failed to delete vote",
+      "modifyError": "Failed to modify vote"
     },
     "results": {
       "title": "Results",
@@ -184,6 +198,8 @@
     "passwordMin": "Password must be at least 8 characters",
     "passwordMatch": "Passwords do not match",
     "pollNotFound": "Poll not found",
-    "unauthorized": "You are not authorized to perform this action"
+    "pollNotFoundDescription": "This poll may have been deleted or the link is incorrect.",
+    "unauthorized": "You are not authorized to perform this action",
+    "notOwner": "You are not the owner of this poll"
   }
 }

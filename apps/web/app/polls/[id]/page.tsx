@@ -250,7 +250,7 @@ export default function PollVotePage() {
       }
     } catch (err) {
       console.error('Failed to vote:', err);
-      toast.error('Failed to submit vote');
+      toast.error(t('poll.vote.voteError'));
     } finally {
       setSubmitting(false);
     }
@@ -278,7 +278,7 @@ export default function PollVotePage() {
       await fetchPollData();
     } catch (err) {
       console.error('Failed to delete vote:', err);
-      toast.error('Failed to delete vote');
+      toast.error(t('poll.vote.deleteError'));
     } finally {
       setSubmitting(false);
     }
@@ -325,7 +325,7 @@ export default function PollVotePage() {
       if (newVotes) setUserVotes(newVotes);
     } catch (err) {
       console.error('Failed to modify vote:', err);
-      toast.error('Failed to modify vote');
+      toast.error(t('poll.vote.modifyError'));
     } finally {
       setSubmitting(false);
     }
@@ -378,9 +378,9 @@ export default function PollVotePage() {
         <main className="flex flex-1 items-center justify-center">
           <Card className="max-w-md">
             <CardHeader>
-              <CardTitle>Poll not found</CardTitle>
+              <CardTitle>{t('errors.pollNotFound')}</CardTitle>
               <CardDescription>
-                This poll may have been deleted or the link is incorrect.
+                {t('errors.pollNotFoundDescription')}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -444,7 +444,7 @@ export default function PollVotePage() {
                   />
                   {currentUser && (
                     <p className="text-xs text-muted-foreground">
-                      Nome compilato automaticamente dal tuo account
+                      {t('poll.vote.nameAutoFilled')}
                     </p>
                   )}
                   {nameError && (
@@ -452,7 +452,7 @@ export default function PollVotePage() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                      <span className="font-medium">Per favore inserisci il tuo nome</span>
+                      <span className="font-medium">{t('poll.vote.nameRequired')}</span>
                     </div>
                   )}
                 </div>
@@ -464,7 +464,7 @@ export default function PollVotePage() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
-                  <span className="font-medium">Per favore seleziona almeno un opzione</span>
+                  <span className="font-medium">{t('poll.vote.selectionRequired')}</span>
                 </div>
               )}
 
@@ -472,7 +472,7 @@ export default function PollVotePage() {
               {(!hasVoted || isEditing) && (
                 <div className="space-y-3">
                   <Label className="flex items-center gap-1 text-base font-semibold">
-                    {poll.poll_type === 'single_choice' ? 'Seleziona un opzione' : 'Seleziona le opzioni'}
+                    {poll.poll_type === 'single_choice' ? t('poll.vote.selectOption') : t('poll.vote.selectOptions')}
                     <span className="text-red-500">*</span>
                   </Label>
                   
@@ -566,7 +566,7 @@ export default function PollVotePage() {
               {hasVoted && currentUser && !isEditing && (
                 <div className="space-y-3">
                   <div className="rounded-lg bg-primary/10 p-3 text-sm text-primary">
-                    <span className="font-medium">Il tuo voto:</span>
+                    <span className="font-medium">{t('poll.vote.yourVote')}:</span>
                     {' '}
                     {options
                       .filter(opt => userVotes.some(v => v.option_id === opt.id))
@@ -646,7 +646,7 @@ export default function PollVotePage() {
                   {submitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Invio in corso...
+                      {t('poll.vote.sending')}
                     </>
                   ) : (
                     t('poll.vote.submitVote')
@@ -665,7 +665,7 @@ export default function PollVotePage() {
                   {submitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Invio in corso...
+                      {t('poll.vote.sending')}
                     </>
                   ) : (
                     t('poll.vote.submitVote')
@@ -683,7 +683,7 @@ export default function PollVotePage() {
                     disabled={submitting}
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    Modifica voto
+                    {t('poll.vote.modifyVote')}
                   </Button>
                   <Button 
                     variant="destructive"
@@ -696,7 +696,7 @@ export default function PollVotePage() {
                     ) : (
                       <Trash2 className="mr-2 h-4 w-4" />
                     )}
-                    Elimina voto
+                    {t('poll.vote.deleteVote')}
                   </Button>
                 </div>
               )}
@@ -712,7 +712,7 @@ export default function PollVotePage() {
                     }}
                     className="flex-1"
                   >
-                    Annulla
+                    {t('common.cancel')}
                   </Button>
                   <Button 
                     onClick={handleModifyVote}
@@ -722,10 +722,10 @@ export default function PollVotePage() {
                     {submitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Salvataggio...
+                        {t('poll.vote.saving')}
                       </>
                     ) : (
-                      'Salva modifiche'
+                      t('poll.vote.saveChanges')
                     )}
                   </Button>
                 </div>

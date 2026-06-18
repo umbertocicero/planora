@@ -217,11 +217,11 @@ export default function CreatePollPage() {
         throw new Error(optionsError.message);
       }
 
-      toast.success(t('pollCreated') || 'Poll created successfully!');
+      toast.success(t('pollCreated'));
       router.push(`/polls/${poll.short_id}`);
     } catch (error) {
       console.error('Failed to create poll:', error);
-      toast.error(t('createError') || 'Failed to create poll');
+      toast.error(t('createError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -487,7 +487,7 @@ export default function CreatePollPage() {
                     )}
                   />
                   <Label htmlFor="showResultsBeforeVote">
-                    {t('showResultsBeforeVote') || 'Show results before voting'}
+                    {t('showResultsBeforeVote')}
                   </Label>
                 </div>
               </CardContent>
@@ -500,7 +500,7 @@ export default function CreatePollPage() {
               className="w-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Creating...' : t('createPoll')}
+              {isSubmitting ? t('creating') : t('createPoll')}
             </Button>
           </form>
         </div>
