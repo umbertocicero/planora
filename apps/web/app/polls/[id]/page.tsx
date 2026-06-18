@@ -72,7 +72,6 @@ export default function PollVotePage() {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [voterName, setVoterName] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
-  const [showResults, setShowResults] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -90,7 +89,6 @@ export default function PollVotePage() {
   const fetchPollData = useCallback(async () => {
     const supabase = createClient();
     
-    // Fetch poll by short_id
     const { data: pollData, error: pollError } = await supabase
       .from('polls')
       .select('*')
@@ -105,7 +103,6 @@ export default function PollVotePage() {
 
     setPoll(pollData);
 
-    // Fetch options
     const { data: optionsData } = await supabase
       .from('poll_options')
       .select('*')
@@ -114,7 +111,6 @@ export default function PollVotePage() {
 
     setOptions(optionsData || []);
 
-    // Fetch vote counts
     const { data: votesData } = await supabase
       .from('votes')
       .select('option_id')
@@ -124,7 +120,6 @@ export default function PollVotePage() {
     const total = votes.length;
     setTotalVotes(total);
 
-    // Calculate results
     const voteCounts: Record<string, number> = {};
     votes.forEach(v => {
       voteCounts[v.option_id] = (voteCounts[v.option_id] || 0) + 1;
@@ -137,7 +132,6 @@ export default function PollVotePage() {
     }));
 
     setResults(resultsData);
-    setShowResults(pollData.show_results_before_vote);
     setLoading(false);
   }, [pollId]);
 
@@ -148,7 +142,6 @@ export default function PollVotePage() {
   const handleVote = async () => {
     if (!poll) return;
     
-    // Reset errors
     setNameError(false);
     setSelectionError(false);
     
@@ -163,15 +156,12 @@ export default function PollVotePage() {
       hasErrors = true;
     }
     
-    if (hasErrors) {
-      return;
-    }
+    if (hasErrors) return;
 
     setSubmitting(true);
     const supabase = createClient();
 
     try {
-      // Insert votes
       const votes = selectedOptions.map(optionId => ({
         poll_id: poll.id,
         option_id: optionId,
@@ -182,16 +172,10 @@ export default function PollVotePage() {
         .from('votes')
         .insert(votes);
 
-      if (voteError) {
-        console.error('Vote error:', voteError);
-        throw new Error(voteError.message);
-      }
+      if (voteError) throw new Error(voteError.message);
 
       setHasVoted(true);
-      setShowResults(true);
       toast.success(t('poll.vote.voteRecorded'));
-      
-      // Refresh results
       await fetchPollData();
     } catch (err) {
       console.error('Failed to vote:', err);
@@ -214,12 +198,10 @@ export default function PollVotePage() {
     const urls: Record<string, string> = {
       email: `mailto:?subject=${encodeURIComponent(poll.title)}&body=${encodeURIComponent(text + '\n' + pollUrl)}`,
       whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + pollUrl)}`,
-      teams: `https://teams.microsoft.com/share?href=${encodeURIComponent(pollUrl)}&text=${encodeURIComponent(text)}`,
     };
     window.open(urls[platform], '_blank');
   };
 
-  // Helper to get option display text
   const getOptionText = (option: PollOption) => {
     if (option.text) return option.text;
     if (option.date) {
@@ -268,7 +250,6 @@ export default function PollVotePage() {
 
       <main className="flex-1 py-12">
         <div className="container mx-auto max-w-2xl px-4">
-          {/* Poll Card */}
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">{poll.title}</CardTitle>
@@ -294,8 +275,8 @@ export default function PollVotePage() {
                     }}
                     placeholder={t('poll.vote.namePlaceholder')}
                     className={cn(
-                      'mt-1.5 text-base',
-                      nameError && 'border-2 border-red-500 bg-red-500/10 focus-visible:ring-red-500'
+                      'text-base',
+                      nameError && 'border-2 border-red-500 bg-red-500/10'
                     )}
                   />
                   {nameError && (
@@ -303,7 +284,7 @@ export default function PollVotePage() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                      <span className="font-medium">{t('poll.vote.nameRequired') || 'Per favore inserisci il tuo nome'}</span>
+                      <span className="font-medium">Per favore inserisci il tuo nome</span>
                     </div>
                   )}
                 </div>
@@ -315,14 +296,47 @@ export default function PollVotePage() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
-                  <span className="font-medium">{t('poll.vote.selectionRequired') || 'Per favore seleziona almeno un\'opzione'}</span>
+                  <span className="font-medium">Per favore seleziona almeno un opzione</span>
                 </div>
               )}
 
-              {/* Voting Options (show when not voted) */}
+              {/* Voting Options */}
               {!hasVoted && (
                 <div className="space-y-3">
-                  <Label className="flex items-center gap-1 text-base font-semibold\">\n                    {poll.poll_type === 'single_choice' \n                      ? (t('poll.vote.selectOption') || 'Seleziona un\\'opzione')\n                      : (t('poll.vote.selectOptions') || 'Seleziona le opzioni')}\n                    <span className=\"text-red-500\">*</span>\n                  </Label>\n                  \n                  {poll.poll_type === 'single_choice' ? (\n                    <RadioGroup\n                      value={selectedOptions[0]}\n                      onValueChange={(value) => {\n                        setSelectedOptions([value]);\n                        setSelectionError(false);\n                      }}\n                      className={cn(selectionError && 'rounded-lg ring-2 ring-red-500 ring-offset-2 ring-offset-background')}\n                    >\n                      {options.map((option) => {\n                        const result = results.find((r) => r.optionId === option.id);\n                        return (\n                          <div\n                            key={option.id}\n                            className={cn(\n                              'flex items-center justify-between rounded-lg border-2 p-4 transition-all hover:bg-muted/50 cursor-pointer',\n                              selectedOptions.includes(option.id) \n                                ? 'border-primary bg-primary/10 shadow-md' \n                                : 'border-muted-foreground/20'\n                            )}\n                          >\n                            <div className=\"flex items-center space-x-3\">\n                              <RadioGroupItem value={option.id} id={option.id} />\n                              <Label\n                                htmlFor={option.id}\n                                className=\"flex-1 cursor-pointer text-base\"\n                              >\n                                {getOptionText(option)}\n                              </Label>\n                            </div>\n                            {poll.show_results_before_vote && (\n                              <span className=\"text-sm text-muted-foreground\">
+                  <Label className="flex items-center gap-1 text-base font-semibold">
+                    {poll.poll_type === 'single_choice' ? 'Seleziona un opzione' : 'Seleziona le opzioni'}
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  
+                  {poll.poll_type === 'single_choice' ? (
+                    <RadioGroup
+                      value={selectedOptions[0]}
+                      onValueChange={(value) => {
+                        setSelectedOptions([value]);
+                        setSelectionError(false);
+                      }}
+                      className={cn(selectionError && 'rounded-lg ring-2 ring-red-500 ring-offset-2 ring-offset-background')}
+                    >
+                      {options.map((option) => {
+                        const result = results.find((r) => r.optionId === option.id);
+                        return (
+                          <div
+                            key={option.id}
+                            className={cn(
+                              'flex items-center justify-between rounded-lg border-2 p-4 transition-all hover:bg-muted/50 cursor-pointer',
+                              selectedOptions.includes(option.id) 
+                                ? 'border-primary bg-primary/10 shadow-md' 
+                                : 'border-muted-foreground/20'
+                            )}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <RadioGroupItem value={option.id} id={option.id} />
+                              <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base">
+                                {getOptionText(option)}
+                              </Label>
+                            </div>
+                            {poll.show_results_before_vote && (
+                              <span className="text-sm text-muted-foreground">
                                 {result?.voteCount || 0} ({result?.percentage || 0}%)
                               </span>
                             )}
@@ -331,46 +345,47 @@ export default function PollVotePage() {
                       })}
                     </RadioGroup>
                   ) : (
-                    options.map((option) => {
-                      const result = results.find((r) => r.optionId === option.id);
-                      return (
-                        <div
-                          key={option.id}
-                          className={cn(
-                            'flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50',
-                            selectedOptions.includes(option.id) && 'border-primary bg-primary/5'
-                          )}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <Checkbox
-                              id={option.id}
-                              checked={selectedOptions.includes(option.id)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setSelectedOptions([...selectedOptions, option.id]);
-                                } else {
-                                  setSelectedOptions(
-                                    selectedOptions.filter((id) => id !== option.id)
-                                  );
-                                }
-                              }}
-                            />
-                            <Label
-                              htmlFor={option.id}
-                              className="flex-1 cursor-pointer"
-                            >
-                              {getOptionText(option)}
-                            </Label>
+                    <div className={cn(selectionError && 'rounded-lg ring-2 ring-red-500 ring-offset-2 ring-offset-background')}>
+                      {options.map((option) => {
+                        const result = results.find((r) => r.optionId === option.id);
+                        return (
+                          <div
+                            key={option.id}
+                            className={cn(
+                              'flex items-center justify-between rounded-lg border-2 p-4 mb-2 transition-all hover:bg-muted/50 cursor-pointer',
+                              selectedOptions.includes(option.id) 
+                                ? 'border-primary bg-primary/10 shadow-md' 
+                                : 'border-muted-foreground/20'
+                            )}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <Checkbox
+                                id={option.id}
+                                checked={selectedOptions.includes(option.id)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedOptions([...selectedOptions, option.id]);
+                                    setSelectionError(false);
+                                  } else {
+                                    setSelectedOptions(selectedOptions.filter((id) => id !== option.id));
+                                  }
+                                }}
+                              />
+                              <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base">
+                                {getOptionText(option)}
+                              </Label>
+                            </div>
+                            {poll.show_results_before_vote && (
+                              <span className="text-sm text-muted-foreground">
+                                {result?.voteCount || 0} ({result?.percentage || 0}%)
+                              </span>
+                            )}
                           </div>
-                          {poll.show_results_before_vote && (
-                            <span className="text-sm text-muted-foreground">
-                              {result?.voteCount || 0} ({result?.percentage || 0}%)
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })
+                        );
+                      })}
+                    </div>
                   )}
+                  
                   {poll.show_results_before_vote && (
                     <p className="text-sm text-muted-foreground">
                       {t('poll.results.totalVotes', { count: totalVotes })}
@@ -379,7 +394,7 @@ export default function PollVotePage() {
                 </div>
               )}
 
-              {/* Results Only (show after voting) */}
+              {/* Results after voting */}
               {hasVoted && (
                 <div className="space-y-3">
                   {options.map((option) => {
@@ -419,7 +434,7 @@ export default function PollVotePage() {
                   {submitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting...
+                      Invio in corso...
                     </>
                   ) : (
                     t('poll.vote.submitVote')
@@ -445,29 +460,15 @@ export default function PollVotePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Copy Link */}
               <div className="flex gap-2">
                 <Input value={pollUrl} readOnly className="font-mono text-sm" />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleCopyLink}
-                >
-                  {copied ? (
-                    <Check className="h-4 w-4 text-accent" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
+                <Button variant="outline" size="icon" onClick={handleCopyLink}>
+                  {copied ? <Check className="h-4 w-4 text-accent" /> : <Copy className="h-4 w-4" />}
                 </Button>
               </div>
 
-              {/* QR Code */}
               <div className="flex justify-center">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowQR(!showQR)}
-                  className="gap-2"
-                >
+                <Button variant="outline" onClick={() => setShowQR(!showQR)} className="gap-2">
                   <QrCode className="h-4 w-4" />
                   {t('poll.share.qrCode')}
                 </Button>
@@ -479,20 +480,11 @@ export default function PollVotePage() {
                 </div>
               )}
 
-              {/* Share Buttons */}
               <div className="flex justify-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleShare('email')}
-                >
+                <Button variant="outline" size="icon" onClick={() => handleShare('email')}>
                   <Mail className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleShare('whatsapp')}
-                >
+                <Button variant="outline" size="icon" onClick={() => handleShare('whatsapp')}>
                   <MessageCircle className="h-4 w-4" />
                 </Button>
               </div>
