@@ -65,7 +65,15 @@ export class VotesService {
     }
 
     // Create votes
-    const votesToInsert = isNotAvailable
+    type VoteInsertRow = {
+      poll_id: string;
+      option_id: string | null;
+      user_id: string | null;
+      voter_name: string | null;
+      is_not_available: boolean;
+    };
+
+    const votesToInsert: VoteInsertRow[] = isNotAvailable
       ? [
           {
             poll_id: input.pollId,

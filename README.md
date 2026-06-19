@@ -498,6 +498,7 @@ I contributi sono benvenuti!
 - [ ] Flag Commenti al voto
 - [ ] Allineare pulsanti toolbar a sinistra
 - [ ] Rimuovere cognome dalla toolbar
+- [ ] SEO Google
 
 ### v1.2 (Pianificato) 📋
 - [ ] Integrazione Google Calendar
