@@ -495,6 +495,15 @@ I contributi sono benvenuti!
 
 ### v1.1 (In Sviluppo) 🚧
 - [ ] Flag per aggiungere possibilibà di scelta di votare la non disponibilità in una data
+- [ ] Flag Commenti al voto
+
+### v1.2 (Pianificato) 📋
+- [ ] Integrazione Google Calendar
+- [ ] Webhook per notifiche
+- [ ] Statistiche avanzate
+- [ ] Monitizzare tramite pubblicità
+- [ ] Notificare vincitore sondaggio
+- [ ] Identificare mobile e suggerire il salvataggio su schermata home
 - [ ] Export CSV/PDF
 - [ ] Protezione password sondaggi
 - [ ] Scadenza automatica
@@ -502,18 +511,12 @@ I contributi sono benvenuti!
 - [ ] Moglioramenti UX/UI Mobile
 - [ ] Modifica dati utente per utenti registrati tramite email
 
-### v1.2 (Pianificato) 📋
-- [ ] Integrazione Google Calendar
-- [ ] Webhook per notifiche
-- [ ] Statistiche avanzate
-- [ ] Monitizzare tramite pubblicità
-- [ ] Identificare mobile e suggerire il salvataggio su schermata home
-
 ### v2.0 (Futuro) 🔮
-- [ ] AI: suggerimento slot migliori
+- [ ] AI: suggerimento slot migliori chiedendo le disponibilità e orari con LLM
 - [ ] Sondaggi con ranking
 - [ ] Enterprise SSO
 - [ ] App mobile (React Native)
+- [ ] UX/UI pisxel stile/minecraft + animazioni al click
 
 ---
 
