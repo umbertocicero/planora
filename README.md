@@ -494,6 +494,7 @@ I contributi sono benvenuti!
 - [x] Dark mode
 
 ### v1.1 (In Sviluppo) 🚧
+- [ ] Flag per aggiungere possibilibà di scelta di votare la non disponibilità in una data
 - [ ] Export CSV/PDF
 - [ ] Protezione password sondaggi
 - [ ] Scadenza automatica
