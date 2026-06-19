@@ -492,13 +492,13 @@ I contributi sono benvenuti!
 - [x] Risultati real-time con Supabase Realtime
 - [x] Multilingua IT/EN con rilevamento automatico browser
 - [x] Dark mode
+- [x] SEO Google
 
 ### v1.1 (In Sviluppo) 🚧
 - [ ] Flag per aggiungere possibilibà di scelta di votare la non disponibilità in una data
 - [ ] Flag Commenti al voto
 - [ ] Allineare pulsanti toolbar a sinistra
 - [ ] Rimuovere cognome dalla toolbar
-- [ ] SEO Google
 
 ### v1.2 (Pianificato) 📋
 - [ ] Integrazione Google Calendar
@@ -519,7 +519,7 @@ I contributi sono benvenuti!
 - [ ] Sondaggi con ranking
 - [ ] Enterprise SSO
 - [ ] App mobile (React Native)
-- [ ] UX/UI pisxel stile/minecraft + animazioni al click
+- [ ] UX/UI pisxel stile/minecraft (o Star Wars) + animazioni al click
 
 ---
 
