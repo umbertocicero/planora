@@ -496,6 +496,8 @@ I contributi sono benvenuti!
 ### v1.1 (In Sviluppo) 🚧
 - [ ] Flag per aggiungere possibilibà di scelta di votare la non disponibilità in una data
 - [ ] Flag Commenti al voto
+- [ ] Allineare pulsanti toolbar a sinistra
+- [ ] Rimuovere cognome dalla toolbar
 
 ### v1.2 (Pianificato) 📋
 - [ ] Integrazione Google Calendar
