@@ -576,6 +576,7 @@ I contributi sono benvenuti!
 - [ ] Flag Commenti al voto
 - [ ] Allineare pulsanti toolbar a sinistra
 - [ ] Rimuovere cognome dalla toolbar
+- [ ] Aggiungere numero di versione del software nel footer
 
 ### v1.2 (Pianificato) 📋
 - [ ] Integrazione Google Calendar
