@@ -1,32 +1,54 @@
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="border-t bg-muted/30">
+    <footer
+      style={{
+        background: '#2A2A2A',
+        borderTop: '3px solid rgba(0,0,0,0.7)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+      }}
+    >
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Brand */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-lg font-bold text-white">P</span>
+          <Link href="/" className="flex items-center gap-2 no-underline">
+            <div
+              className="flex h-8 w-8 items-center justify-center font-press text-white text-xs"
+              style={{
+                background: '#5D8A3A',
+                borderTop: '3px solid rgba(255,255,255,0.55)',
+                borderLeft: '3px solid rgba(255,255,255,0.55)',
+                borderBottom: '3px solid rgba(0,0,0,0.5)',
+                borderRight: '3px solid rgba(0,0,0,0.5)',
+              }}
+            >
+              P
             </div>
-            <span className="text-xl font-bold">Planora</span>
+            <span className="font-press text-xs text-[#FCEE4B]">Planora</span>
           </Link>
 
-          {/* Links */}
-          <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <Link href="/polls/create" className="hover:text-foreground transition-colors">
+          {/* Nav links */}
+          <nav className="flex flex-wrap items-center justify-center gap-6">
+            <Link
+              href="/polls/create"
+              className="font-pixel text-xs text-[#888] hover:text-[#C6C6C6] transition-colors duration-100"
+            >
               Crea Sondaggio
             </Link>
-            <Link href="/#features" className="hover:text-foreground transition-colors">
+            <Link
+              href="/#features"
+              className="font-pixel text-xs text-[#888] hover:text-[#C6C6C6] transition-colors duration-100"
+            >
               Funzionalità
             </Link>
           </nav>
 
           {/* Credits */}
-          <p className="flex items-center gap-1 text-sm text-muted-foreground">
-            Made with <Heart className="h-4 w-4 fill-red-500 text-red-500" /> by Umberto Antonio Cicero
+          <p className="font-pixel text-xs text-[#555]">
+            Made with{' '}
+            <span className="text-[#B02E26]">&#9829;</span>{' '}
+            by Umberto Antonio Cicero
           </p>
         </div>
       </div>

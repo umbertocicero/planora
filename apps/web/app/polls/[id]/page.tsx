@@ -865,40 +865,54 @@ export default function PollVotePage() {
 
               {/* Results after voting (for logged users who voted and are not editing) */}
               {hasVoted && currentUser && !isEditing && (
-                <div className="space-y-3">
+                <div className="space-y-5">
+                  {/* Achievement-style "Your vote" banner */}
                   <div className={cn(
-                    'rounded-lg p-3 text-sm',
-                    notAvailable ? 'bg-orange-500/10 text-orange-600' : 'bg-primary/10 text-primary'
+                    'mc-inset p-4',
+                    notAvailable
+                      ? 'bg-orange-500/10 text-orange-400'
+                      : 'bg-[#5D8A3A]/15 text-[#3DCC4A]'
                   )}>
-                    <span className="font-medium">{t('poll.vote.yourVote')}:</span>
+                    <span className="font-pixel text-sm font-bold">{t('poll.vote.yourVote')}:</span>
                     {' '}
-                    {notAvailable 
+                    <span className="text-lg">
+                    {notAvailable
                       ? t('poll.vote.notAvailableShort')
                       : options
                           .filter(opt => userVotes.some(v => v.option_id === opt.id))
                           .map(opt => getOptionText(opt))
                           .join(', ')
                     }
+                    </span>
                   </div>
+
+                  {/* Option results */}
                   {options.map((option) => {
                     const result = results.find((r) => r.optionId === option.id);
                     const isUserChoice = userVotes.some(v => v.option_id === option.id);
                     return (
-                      <div key={option.id} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className={cn('font-medium', isUserChoice && 'text-primary')}>
-                            {isUserChoice && '✓ '}
+                      <div key={option.id} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className={cn(
+                            'text-xl font-medium',
+                            isUserChoice ? 'text-[#3DCC4A]' : 'text-foreground'
+                          )}>
+                            {isUserChoice && <span className="text-[#FCEE4B] mr-1">✓</span>}
                             {getOptionText(option)}
                           </span>
-                          <span className="text-muted-foreground">
+                          <span className={cn(
+                            'text-lg font-pixel tabular-nums ml-4 shrink-0',
+                            isUserChoice ? 'text-[#FCEE4B]' : 'text-muted-foreground'
+                          )}>
                             {result?.voteCount || 0} ({result?.percentage || 0}%)
                           </span>
                         </div>
-                        <div className="h-3 overflow-hidden rounded-full bg-muted">
+                        {/* XP-bar style vote bar */}
+                        <div className="mc-inset h-5 overflow-hidden bg-[#2A2A2A]">
                           <div
                             className={cn(
                               'h-full transition-all duration-500',
-                              isUserChoice ? 'bg-primary' : 'bg-muted-foreground/30'
+                              isUserChoice ? 'bg-[#3DCC4A]' : 'bg-[#6B6B6B]'
                             )}
                             style={{ width: `${result?.percentage || 0}%` }}
                           />
@@ -906,27 +920,27 @@ export default function PollVotePage() {
                       </div>
                     );
                   })}
-                  
+
                   {/* Collapsible voter details */}
                   <Collapsible>
-                    <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer group w-full">
-                      <Users className="h-4 w-4" />
-                      <span>{t('poll.results.totalVotes', { count: totalVotes })}</span>
-                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                      <span className="text-xs opacity-60 ml-auto">{t('poll.results.clickToExpand')}</span>
+                    <CollapsibleTrigger className="mc-panel flex items-center gap-3 p-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group w-full" style={{ background: '#3B3B3B' }}>
+                      <Users className="h-5 w-5" />
+                      <span className="text-base">{t('poll.results.totalVotes', { count: totalVotes })}</span>
+                      <ChevronDown className="h-5 w-5 transition-transform group-data-[state=open]:rotate-180" />
+                      <span className="text-sm opacity-60 ml-auto">{t('poll.results.clickToExpand')}</span>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3 space-y-3 animate-in slide-in-from-top-2">
+                    <CollapsibleContent className="mt-4 space-y-3 animate-in slide-in-from-top-2">
                       {options.map((option) => {
                         const result = results.find((r) => r.optionId === option.id);
                         if (!result || result.voterNames.length === 0) return null;
                         return (
-                          <div key={option.id} className="rounded-lg bg-muted/50 p-3 space-y-2">
-                            <p className="text-sm font-medium">{getOptionText(option)}</p>
-                            <div className="flex flex-wrap gap-1.5">
+                          <div key={option.id} className="mc-slot p-4 space-y-3">
+                            <p className="text-base font-medium">{getOptionText(option)}</p>
+                            <div className="flex flex-wrap gap-2">
                               {result.voterNames.map((name, idx) => (
                                 <span
                                   key={idx}
-                                  className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary"
+                                  className="mc-raised inline-flex items-center bg-[#5D8A3A]/20 px-3 py-1 text-sm text-[#3DCC4A]"
                                 >
                                   {name}
                                 </span>
@@ -936,23 +950,23 @@ export default function PollVotePage() {
                         );
                       })}
                       {poll.poll_type === 'calendar' && notAvailableCount > 0 && (
-                        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 p-3 space-y-2">
-                          <p className="text-sm font-medium text-orange-700">
+                        <div className="mc-slot p-4 space-y-3 border border-orange-500/30">
+                          <p className="text-base font-medium text-orange-400">
                             {t('poll.vote.notAvailableShort')} ({notAvailableCount})
                           </p>
                           {notAvailableVoterNames.length > 0 ? (
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-2">
                               {notAvailableVoterNames.map((name, idx) => (
                                 <span
                                   key={`${name}-${idx}`}
-                                  className="inline-flex items-center rounded-full bg-orange-500/20 px-2.5 py-0.5 text-xs font-medium text-orange-700"
+                                  className="mc-raised inline-flex items-center bg-orange-500/20 px-3 py-1 text-sm text-orange-400"
                                 >
                                   {name}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <p className="text-xs text-muted-foreground">{t('poll.results.hiddenVoters')}</p>
+                            <p className="text-sm text-muted-foreground">{t('poll.results.hiddenVoters')}</p>
                           )}
                         </div>
                       )}
@@ -963,40 +977,54 @@ export default function PollVotePage() {
 
               {/* Results after voting (for anonymous users who voted and are not editing) */}
               {hasVoted && !currentUser && !isEditing && (
-                <div className="space-y-3">
+                <div className="space-y-5">
+                  {/* Achievement-style "Your vote" banner */}
                   <div className={cn(
-                    'rounded-lg p-3 text-sm',
-                    notAvailable ? 'bg-orange-500/10 text-orange-600' : 'bg-primary/10 text-primary'
+                    'mc-inset p-4',
+                    notAvailable
+                      ? 'bg-orange-500/10 text-orange-400'
+                      : 'bg-[#5D8A3A]/15 text-[#3DCC4A]'
                   )}>
-                    <span className="font-medium">{t('poll.vote.yourVote')}:</span>
+                    <span className="font-pixel text-sm font-bold">{t('poll.vote.yourVote')}:</span>
                     {' '}
-                    {notAvailable 
+                    <span className="text-lg">
+                    {notAvailable
                       ? t('poll.vote.notAvailableShort')
                       : options
                           .filter(opt => userVotes.some(v => v.option_id === opt.id))
                           .map(opt => getOptionText(opt))
                           .join(', ')
                     }
+                    </span>
                   </div>
+
+                  {/* Option results */}
                   {options.map((option) => {
                     const result = results.find((r) => r.optionId === option.id);
                     const isUserChoice = userVotes.some(v => v.option_id === option.id);
                     return (
-                      <div key={option.id} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className={cn('font-medium', isUserChoice && 'text-primary')}>
-                            {isUserChoice && '✓ '}
+                      <div key={option.id} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className={cn(
+                            'text-xl font-medium',
+                            isUserChoice ? 'text-[#3DCC4A]' : 'text-foreground'
+                          )}>
+                            {isUserChoice && <span className="text-[#FCEE4B] mr-1">✓</span>}
                             {getOptionText(option)}
                           </span>
-                          <span className="text-muted-foreground">
+                          <span className={cn(
+                            'text-lg font-pixel tabular-nums ml-4 shrink-0',
+                            isUserChoice ? 'text-[#FCEE4B]' : 'text-muted-foreground'
+                          )}>
                             {result?.voteCount || 0} ({result?.percentage || 0}%)
                           </span>
                         </div>
-                        <div className="h-3 overflow-hidden rounded-full bg-muted">
+                        {/* XP-bar style vote bar */}
+                        <div className="mc-inset h-5 overflow-hidden bg-[#2A2A2A]">
                           <div
                             className={cn(
                               'h-full transition-all duration-500',
-                              isUserChoice ? 'bg-primary' : 'bg-muted-foreground/30'
+                              isUserChoice ? 'bg-[#3DCC4A]' : 'bg-[#6B6B6B]'
                             )}
                             style={{ width: `${result?.percentage || 0}%` }}
                           />
@@ -1004,27 +1032,27 @@ export default function PollVotePage() {
                       </div>
                     );
                   })}
-                  
+
                   {/* Collapsible voter details */}
                   <Collapsible>
-                    <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer group w-full">
-                      <Users className="h-4 w-4" />
-                      <span>{t('poll.results.totalVotes', { count: totalVotes })}</span>
-                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                      <span className="text-xs opacity-60 ml-auto">{t('poll.results.clickToExpand')}</span>
+                    <CollapsibleTrigger className="mc-panel flex items-center gap-3 p-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group w-full" style={{ background: '#3B3B3B' }}>
+                      <Users className="h-5 w-5" />
+                      <span className="text-base">{t('poll.results.totalVotes', { count: totalVotes })}</span>
+                      <ChevronDown className="h-5 w-5 transition-transform group-data-[state=open]:rotate-180" />
+                      <span className="text-sm opacity-60 ml-auto">{t('poll.results.clickToExpand')}</span>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3 space-y-3 animate-in slide-in-from-top-2">
+                    <CollapsibleContent className="mt-4 space-y-3 animate-in slide-in-from-top-2">
                       {options.map((option) => {
                         const result = results.find((r) => r.optionId === option.id);
                         if (!result || result.voterNames.length === 0) return null;
                         return (
-                          <div key={option.id} className="rounded-lg bg-muted/50 p-3 space-y-2">
-                            <p className="text-sm font-medium">{getOptionText(option)}</p>
-                            <div className="flex flex-wrap gap-1.5">
+                          <div key={option.id} className="mc-slot p-4 space-y-3">
+                            <p className="text-base font-medium">{getOptionText(option)}</p>
+                            <div className="flex flex-wrap gap-2">
                               {result.voterNames.map((name, idx) => (
                                 <span
                                   key={idx}
-                                  className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary"
+                                  className="mc-raised inline-flex items-center bg-[#5D8A3A]/20 px-3 py-1 text-sm text-[#3DCC4A]"
                                 >
                                   {name}
                                 </span>
@@ -1034,23 +1062,23 @@ export default function PollVotePage() {
                         );
                       })}
                       {poll.poll_type === 'calendar' && notAvailableCount > 0 && (
-                        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 p-3 space-y-2">
-                          <p className="text-sm font-medium text-orange-700">
+                        <div className="mc-slot p-4 space-y-3 border border-orange-500/30">
+                          <p className="text-base font-medium text-orange-400">
                             {t('poll.vote.notAvailableShort')} ({notAvailableCount})
                           </p>
                           {notAvailableVoterNames.length > 0 ? (
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-2">
                               {notAvailableVoterNames.map((name, idx) => (
                                 <span
                                   key={`${name}-${idx}`}
-                                  className="inline-flex items-center rounded-full bg-orange-500/20 px-2.5 py-0.5 text-xs font-medium text-orange-700"
+                                  className="mc-raised inline-flex items-center bg-orange-500/20 px-3 py-1 text-sm text-orange-400"
                                 >
                                   {name}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <p className="text-xs text-muted-foreground">{t('poll.results.hiddenVoters')}</p>
+                            <p className="text-sm text-muted-foreground">{t('poll.results.hiddenVoters')}</p>
                           )}
                         </div>
                       )}

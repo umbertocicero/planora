@@ -27,14 +27,12 @@ export function Header() {
 
   useEffect(() => {
     const supabase = createClient();
-    
-    // Get initial user
+
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
@@ -55,60 +53,83 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header
+      className="sticky top-0 z-50 w-full"
+      style={{
+        background: '#3B3B3B',
+        borderBottom: '3px solid rgba(0,0,0,0.7)',
+        boxShadow: '0 3px 0 rgba(255,255,255,0.08)',
+      }}
+    >
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-lg font-bold text-white">P</span>
+        {/* Logo — grass-block style */}
+        <Link href="/" className="flex items-center gap-2 no-underline">
+          <div
+            className="flex h-9 w-9 items-center justify-center font-press text-white text-sm"
+            style={{
+              background: '#5D8A3A',
+              borderTop: '3px solid rgba(255,255,255,0.55)',
+              borderLeft: '3px solid rgba(255,255,255,0.55)',
+              borderBottom: '3px solid rgba(0,0,0,0.5)',
+              borderRight: '3px solid rgba(0,0,0,0.5)',
+            }}
+          >
+            P
           </div>
-          <span className="text-xl font-bold">Planora</span>
+          <span className="font-press text-sm text-[#FCEE4B] hidden sm:block">Planora</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center space-x-6 md:flex">
+        {/* Desktop nav links */}
+        <div className="hidden items-center gap-6 md:flex">
           <Link
             href="/polls/create"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A] transition-colors duration-100"
           >
             {t('createPoll')}
           </Link>
           <Link
             href="/dashboard"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A] transition-colors duration-100"
           >
             {t('dashboard')}
           </Link>
         </div>
 
-        {/* Right Side */}
-        <div className="hidden items-center space-x-4 md:flex">
+        {/* Right side */}
+        <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
-          
+
           {loading ? (
-            <div className="h-8 w-20 animate-pulse rounded bg-muted" />
+            <div className="h-8 w-20 animate-pulse bg-[#4A4A4A]" />
           ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 text-[#C6C6C6] hover:text-white">
                   <User className="h-4 w-4" />
-                  <span className="max-w-[150px] truncate">{getUserDisplayName()}</span>
+                  <span className="max-w-[120px] truncate font-pixel text-xs">
+                    {getUserDisplayName()}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                  {user.email}
-                </div>
-                <DropdownMenuSeparator />
+              <DropdownMenuContent
+                align="end"
+                className="w-56 font-pixel text-xs"
+                style={{ background: '#3B3B3B', border: '2px solid #222' }}
+              >
+                <div className="px-2 py-1.5 text-xs text-[#888]">{user.email}</div>
+                <DropdownMenuSeparator style={{ background: '#555' }} />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="cursor-pointer">
+                  <Link href="/dashboard" className="cursor-pointer text-[#C6C6C6] hover:text-white">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     {t('dashboard')}
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500">
+                <DropdownMenuSeparator style={{ background: '#555' }} />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer text-[#B02E26] hover:text-red-400"
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   {t('logout')}
                 </DropdownMenuItem>
@@ -116,7 +137,7 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <Button asChild variant="ghost" size="sm">
+              <Button asChild variant="ghost" size="sm" className="text-[#C6C6C6]">
                 <Link href="/login">{t('login')}</Link>
               </Button>
               <Button asChild size="sm">
@@ -126,63 +147,62 @@ export function Header() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile menu toggle */}
         <button
-          className="md:hidden"
+          className="md:hidden text-[#C6C6C6] hover:text-white transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
+          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="border-b bg-background px-4 py-4 md:hidden">
-          <div className="flex flex-col space-y-4">
+        <div
+          className="px-4 py-4 md:hidden"
+          style={{
+            background: '#2A2A2A',
+            borderBottom: '3px solid rgba(0,0,0,0.7)',
+          }}
+        >
+          <div className="flex flex-col gap-4">
             <Link
               href="/polls/create"
-              className="text-sm font-medium"
+              className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A]"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('createPoll')}
             </Link>
             <Link
               href="/dashboard"
-              className="text-sm font-medium"
+              className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A]"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('dashboard')}
             </Link>
-            <div className="flex items-center space-x-4 pt-4">
+            <div className="flex items-center gap-4 pt-2">
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
-            
+
             {user ? (
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex flex-col gap-2 pt-2">
+                <div className="flex items-center gap-2 text-xs text-[#888] font-pixel">
                   <User className="h-4 w-4" />
                   <span className="truncate">{getUserDisplayName()}</span>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full text-red-500" 
-                  onClick={() => {
-                    handleLogout();
-                    setMobileMenuOpen(false);
-                  }}
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   {t('logout')}
                 </Button>
               </div>
             ) : (
-              <div className="flex space-x-2 pt-2">
+              <div className="flex gap-2 pt-2">
                 <Button asChild variant="outline" size="sm" className="flex-1">
                   <Link href="/login">{t('login')}</Link>
                 </Button>

@@ -4,73 +4,155 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%; /* #F8FAFC */
-    --foreground: 222 47% 11%; /* #0F172A */
+    /* ── Minecraft Overworld Palette ── */
+    --background: 0 0% 78%;          /* stone #C6C6C6  */
+    --foreground: 0 0% 8%;           /* near black     */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 54%;                /* mid stone #8B8B8B */
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 0 0% 54%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 227 100% 68%; /* #5B7FFF */
+    --primary: 101 22% 38%;          /* grass green #5D8A3A */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 258 90% 66%; /* #8B5CF6 */
+    --secondary: 25 54% 40%;         /* wood brown #9C6B30  */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 68%;
+    --muted-foreground: 0 0% 22%;
 
-    --accent: 142 71% 45%; /* #22C55E */
-    --accent-foreground: 0 0% 100%;
+    --accent: 128 58% 52%;           /* emerald #3DCC4A  */
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 3 64% 43%;        /* redstone #B02E26 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 227 100% 68%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 101 22% 38%;
 
-    --radius: 0.5rem;
+    --radius: 0px;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* ── Minecraft Cave / Obsidian Mode ── */
+    --background: 260 35% 9%;        /* obsidian #15101E */
+    --foreground: 0 0% 88%;
 
-    --card: 222 47% 15%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 29%;                /* stone dark #4A4A4A */
+    --card-foreground: 0 0% 88%;
 
-    --popover: 222 47% 15%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 25%;
+    --popover-foreground: 0 0% 88%;
 
-    --primary: 227 100% 68%;
+    --primary: 101 22% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 258 90% 66%;
+    --secondary: 25 54% 40%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 58%;
 
-    --accent: 142 71% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 128 58% 52%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 62% 30%;
+    --destructive: 3 64% 43%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 227 100% 68%;
+    --border: 0 0% 15%;
+    --input: 0 0% 22%;
+    --ring: 101 22% 38%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    border-radius: 0 !important;
+    image-rendering: pixelated;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Pixelify Sans', monospace;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+}
+
+@layer components {
+  /* ── Minecraft Bevel: Raised (default buttons / cards) ── */
+  .mc-raised {
+    border-top: 3px solid rgba(255, 255, 255, 0.6);
+    border-left: 3px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.55);
+    border-right: 3px solid rgba(0, 0, 0, 0.55);
+  }
+
+  /* ── Minecraft Bevel: Inset (pressed state / inputs) ── */
+  .mc-inset {
+    border-top: 3px solid rgba(0, 0, 0, 0.55);
+    border-left: 3px solid rgba(0, 0, 0, 0.55);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.6);
+    border-right: 3px solid rgba(255, 255, 255, 0.6);
+  }
+
+  /* ── Minecraft Button ── */
+  .mc-btn {
+    border-top: 3px solid rgba(255, 255, 255, 0.6);
+    border-left: 3px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.55);
+    border-right: 3px solid rgba(0, 0, 0, 0.55);
+    transition: filter 100ms steps(2, end), transform 100ms steps(2, end);
+    cursor: pointer;
+  }
+  .mc-btn:hover:not(:disabled) {
+    filter: brightness(1.18);
+  }
+  .mc-btn:active:not(:disabled) {
+    border-top: 3px solid rgba(0, 0, 0, 0.55);
+    border-left: 3px solid rgba(0, 0, 0, 0.55);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.6);
+    border-right: 3px solid rgba(255, 255, 255, 0.6);
+    transform: translateY(1px);
+  }
+
+  /* ── Minecraft Panel / Card ── */
+  .mc-panel {
+    background-color: #8B8B8B;
+    border-top: 3px solid rgba(255, 255, 255, 0.6);
+    border-left: 3px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.55);
+    border-right: 3px solid rgba(0, 0, 0, 0.55);
+  }
+  .dark .mc-panel {
+    background-color: #3B3B3B;
+  }
+
+  /* ── Inventory Slot (inset square container) ── */
+  .mc-slot {
+    background-color: #6B6B6B;
+    border-top: 3px solid rgba(0, 0, 0, 0.55);
+    border-left: 3px solid rgba(0, 0, 0, 0.55);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+    border-right: 3px solid rgba(255, 255, 255, 0.5);
+  }
+  .dark .mc-slot {
+    background-color: #2A2A2A;
+  }
+
+  /* ── Press Start 2P: reserved for hero/page titles ── */
+  .mc-title {
+    font-family: 'Press Start 2P', monospace;
+    line-height: 1.8;
+    letter-spacing: 0;
+    -webkit-font-smoothing: none;
   }
 }

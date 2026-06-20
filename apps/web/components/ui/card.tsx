@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const cardVariants = cva(
-  'rounded-lg border bg-card text-card-foreground shadow-sm'
-);
-
+/* Minecraft inventory panel — raised bevel, stone background */
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn(cardVariants(), className)} {...props} />
+  <div
+    ref={ref}
+    className={cn('mc-panel text-card-foreground', className)}
+    {...props}
+  />
 ));
 Card.displayName = 'Card';
 
@@ -32,10 +32,7 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn(
-      'text-2xl font-semibold leading-none tracking-tight',
-      className
-    )}
+    className={cn('text-xl font-bold leading-none tracking-tight font-pixel', className)}
     {...props}
   />
 ));

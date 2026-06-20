@@ -572,7 +572,8 @@ I contributi sono benvenuti!
 - [x] Google Analytics
 
 ### v1.1 (In Sviluppo) 🚧
-- [ ] Flag per aggiungere possibilibà di scelta di votare la non disponibilità in una data
+- [ ] UX/UI pisxel stile/minecraft (o Star Wars) + animazioni al click
+- [ ] Flag per scegliere di votare la non disponibilità in una data
 - [ ] Flag Commenti al voto
 - [ ] Allineare pulsanti toolbar a sinistra
 - [ ] Rimuovere cognome dalla toolbar
@@ -598,7 +599,6 @@ I contributi sono benvenuti!
 - [ ] Sondaggi con ranking
 - [ ] Enterprise SSO
 - [ ] App mobile (React Native)
-- [ ] UX/UI pisxel stile/minecraft (o Star Wars) + animazioni al click
 
 ---
 

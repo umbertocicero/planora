@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import Script from 'next/script';
@@ -8,7 +7,6 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://planora-poll.vercel.app';
 
 export const metadata: Metadata = {
@@ -74,6 +72,14 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Pixel fonts — must load before first paint to avoid FOUT */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Pixelify+Sans:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <Script
           id="schema-org"
           type="application/ld+json"
@@ -126,7 +132,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={inter.className}>
+      <body>
         {process.env.NEXT_PUBLIC_GTM_ID && (
           <noscript
             dangerouslySetInnerHTML={{

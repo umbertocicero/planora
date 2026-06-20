@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -87,24 +87,32 @@ export default function CreatePollPage() {
   const t = useTranslations('poll.create');
   const tTypes = useTranslations('poll.types');
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Read pre-selected poll type from query param
+  const typeParam = searchParams.get('type');
+  const validTypes = ['single_choice', 'multiple_choice', 'calendar'] as const;
+  const initialType = validTypes.includes(typeParam as typeof validTypes[number])
+    ? (typeParam as typeof validTypes[number])
+    : 'single_choice';
 
   useEffect(() => {
     const checkAuth = async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         router.push('/login?redirect=/polls/create');
         return;
       }
-      
+
       setUser(user);
       setIsLoading(false);
     };
-    
+
     checkAuth();
   }, [router]);
 
@@ -118,7 +126,7 @@ export default function CreatePollPage() {
   } = useForm<CreatePollForm>({
     resolver: zodResolver(createPollSchema),
     defaultValues: {
-      pollType: 'single_choice',
+      pollType: initialType,
       options: [{ text: '' }, { text: '' }],
       dateOptions: [{ date: '', startTime: '', endTime: '' }, { date: '', startTime: '', endTime: '' }],
       allowAnonymous: true,
