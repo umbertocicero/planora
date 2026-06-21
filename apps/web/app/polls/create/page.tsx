@@ -13,6 +13,7 @@ import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { WalkingChicken } from '@/components/walking-chicken';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -265,7 +266,8 @@ export default function CreatePollPage() {
 
           <form onSubmit={handleSubmit(onSubmit, (errors) => console.log('Validation errors:', errors))} className="space-y-8">
             {/* Poll Type Selection */}
-            <Card>
+            <Card className="relative">
+              <WalkingChicken />
               <CardHeader>
                 <CardTitle className="text-lg">{t('pollType')}</CardTitle>
               </CardHeader>

@@ -26,6 +26,7 @@ import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { WalkingChicken } from '@/components/walking-chicken';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -689,7 +690,8 @@ export default function PollVotePage() {
 
       <main className="flex-1 py-12">
         <div className="container mx-auto max-w-2xl px-4">
-          <Card>
+          <Card className="relative">
+            <WalkingChicken />
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">

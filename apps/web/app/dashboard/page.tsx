@@ -10,6 +10,7 @@ import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { WalkingChicken } from '@/components/walking-chicken';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -303,7 +304,8 @@ export default function DashboardPage() {
           </div>
 
           {/* My Polls List */}
-          <Card className="mb-6">
+          <Card className="relative mb-6">
+            <WalkingChicken />
             <CardHeader>
               <CardTitle>{t('myPolls.title')}</CardTitle>
               <CardDescription>
