@@ -26,6 +26,7 @@
     "dashboard": "Dashboard",
     "createPoll": "Create Poll",
     "myPolls": "My Polls",
+    "account": "Account",
     "login": "Login",
     "logout": "Logout",
     "signup": "Sign Up"
@@ -67,6 +68,43 @@
     "createPoll": "Create Poll",
     "features": "Features",
     "madeWith": "Made with"
+  },
+  "account": {
+    "title": "Account",
+    "subtitle": "Manage your profile and account settings",
+    "nameRequired": "Please enter a display name",
+    "nameUpdated": "Display name updated!",
+    "nameUpdateError": "Failed to update display name",
+    "accountDeleted": "Your account has been deleted",
+    "deleteError": "Failed to delete account. Please try again.",
+    "deleteConfirmWord": "DELETE",
+    "profile": {
+      "title": "Profile",
+      "description": "This name is shown to others on the polls you vote in",
+      "email": "Email",
+      "emailHint": "Your email address cannot be changed",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Your name",
+      "displayNameHint": "The name shown next to your votes — updating it also updates your past votes",
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+      "deleteButton": "Delete Account"
+    },
+    "deleteDialog": {
+      "title": "Delete your account?",
+      "description": "This will permanently delete your account and erase all of your data from our database. This action cannot be undone.",
+      "bulletPolls": "All polls you created, including their options and votes",
+      "bulletVotes": "All votes you cast on other polls",
+      "bulletProfile": "Your profile and login credentials",
+      "confirmLabel": "Type {word} to confirm",
+      "cancel": "Cancel",
+      "confirm": "Delete my account",
+      "deleting": "Deleting..."
+    }
   },
   "poll": {
     "types": {

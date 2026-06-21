@@ -26,6 +26,7 @@
     "dashboard": "Dashboard",
     "createPoll": "Crea Sondaggio",
     "myPolls": "I Miei Sondaggi",
+    "account": "Account",
     "login": "Accedi",
     "logout": "Esci",
     "signup": "Registrati"
@@ -67,6 +68,43 @@
     "createPoll": "Crea Sondaggio",
     "features": "Funzionalità",
     "madeWith": "Fatto con"
+  },
+  "account": {
+    "title": "Account",
+    "subtitle": "Gestisci il tuo profilo e le impostazioni dell'account",
+    "nameRequired": "Inserisci un nome da visualizzare",
+    "nameUpdated": "Nome aggiornato!",
+    "nameUpdateError": "Errore nell'aggiornamento del nome",
+    "accountDeleted": "Il tuo account è stato eliminato",
+    "deleteError": "Errore nell'eliminazione dell'account. Riprova.",
+    "deleteConfirmWord": "ELIMINA",
+    "profile": {
+      "title": "Profilo",
+      "description": "Questo nome viene mostrato agli altri nei sondaggi a cui partecipi",
+      "email": "Email",
+      "emailHint": "Il tuo indirizzo email non può essere modificato",
+      "displayName": "Nome Visualizzato",
+      "displayNamePlaceholder": "Il tuo nome",
+      "displayNameHint": "Il nome mostrato accanto ai tuoi voti — la modifica aggiorna anche i voti già espressi",
+      "save": "Salva Modifiche",
+      "saving": "Salvataggio..."
+    },
+    "danger": {
+      "title": "Zona Pericolosa",
+      "description": "Elimina definitivamente il tuo account e tutti i dati associati. Questa azione non può essere annullata.",
+      "deleteButton": "Elimina Account"
+    },
+    "deleteDialog": {
+      "title": "Eliminare il tuo account?",
+      "description": "Questo eliminerà definitivamente il tuo account e cancellerà tutti i tuoi dati dal nostro database. Questa azione non può essere annullata.",
+      "bulletPolls": "Tutti i sondaggi che hai creato, comprese le opzioni e i voti",
+      "bulletVotes": "Tutti i voti che hai espresso su altri sondaggi",
+      "bulletProfile": "Il tuo profilo e le credenziali di accesso",
+      "confirmLabel": "Scrivi {word} per confermare",
+      "cancel": "Annulla",
+      "confirm": "Elimina il mio account",
+      "deleting": "Eliminazione..."
+    }
   },
   "poll": {
     "types": {

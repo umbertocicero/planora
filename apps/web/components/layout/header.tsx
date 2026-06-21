@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Menu, X, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Settings } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -122,6 +122,12 @@ export function Header() {
                     {t('dashboard')}
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/account" className="cursor-pointer text-foreground/80 hover:text-foreground">
+                    <Settings className="mr-2 h-4 w-4" />
+                    {t('account')}
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleLogout}
@@ -184,6 +190,14 @@ export function Header() {
                   <User className="h-4 w-4" />
                   <span className="truncate">{getUserDisplayName()}</span>
                 </div>
+                <Link
+                  href="/account"
+                  className="font-pixel text-sm text-foreground/70 hover:text-[#5D8A3A] dark:hover:text-[#3DCC4A] flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Settings className="h-4 w-4" />
+                  {t('account')}
+                </Link>
                 <Button
                   variant="destructive"
                   size="sm"
