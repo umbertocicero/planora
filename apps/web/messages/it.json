@@ -142,6 +142,10 @@
       "setExpiration": "Imposta data di scadenza",
       "requireName": "Richiedi nome del partecipante",
       "showResultsBeforeVote": "Mostra risultati prima del voto",
+      "allowNotAvailable": "Consenti opzione \"non disponibile\"",
+      "allowNotAvailableHint": "Permette ai partecipanti di indicare che nessuna data va bene",
+      "allowComments": "Consenti commenti al voto",
+      "allowCommentsHint": "Permette ai partecipanti di lasciare un commento opzionale al voto",
       "createPoll": "Crea Sondaggio",
       "creating": "Creazione...",
       "pollCreated": "Sondaggio creato con successo!",
@@ -171,6 +175,9 @@
       "voteDeleted": "Il tuo voto è stato eliminato",
       "voteModified": "Il tuo voto è stato aggiornato",
       "yourVote": "Il tuo voto",
+      "comment": "Commento",
+      "commentOptional": "Commento (opzionale)",
+      "commentPlaceholder": "Aggiungi un commento al tuo voto...",
       "modifyVote": "Modifica voto",
       "deleteVote": "Elimina voto",
       "saveChanges": "Salva modifiche",
@@ -188,7 +195,9 @@
       "hideResults": "Nascondi Risultati",
       "export": "Esporta Risultati",
       "clickToExpand": "clicca per vedere chi ha votato",
-      "hiddenVoters": "Nomi non disponibili"
+      "hiddenVoters": "Nomi non disponibili",
+      "comments": "Commenti",
+      "anonymous": "Anonimo"
     },
     "share": {
       "title": "Condividi Sondaggio",

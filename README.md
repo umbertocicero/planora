@@ -573,11 +573,9 @@ I contributi sono benvenuti!
 
 ### v1.1 (In Sviluppo) 🚧
 - [ ] UX/UI pisxel stile/minecraft (o Star Wars) + animazioni al click
-- [ ] Flag per scegliere di votare la non disponibilità in una data
-- [ ] Flag Commenti al voto
+- [x] Flag per scegliere di votare la non disponibilità in una data
+- [x] Flag Commenti al voto
 - [ ] Aggiungere numero di versione del software nel footer
-- [ ] Ottimizzazione DB (tabella boll result)
-- [ ] Modifica nome utente da visualizzare agli altri
 - [ ] Animazioni
 
 ### v1.2 (Pianificato) 📋

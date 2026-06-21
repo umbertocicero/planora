@@ -19,6 +19,7 @@ import {
   Ban,
   ChevronDown,
   Users,
+  MessageSquare,
 } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 
@@ -30,6 +31,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
@@ -60,7 +62,14 @@ interface Poll {
   require_name: boolean;
   allow_anonymous: boolean;
   show_results_before_vote: boolean;
+  allow_not_available: boolean;
+  allow_comments: boolean;
   status: string;
+}
+
+interface VoteComment {
+  name: string | null;
+  comment: string;
 }
 
 interface VoteResult {
@@ -128,6 +137,8 @@ export default function PollVotePage() {
   const [notAvailable, setNotAvailable] = useState(false);
   const [notAvailableVoterNames, setNotAvailableVoterNames] = useState<string[]>([]);
   const [notAvailableCount, setNotAvailableCount] = useState(0);
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState<VoteComment[]>([]);
   
   // Validation errors
   const [nameError, setNameError] = useState(false);
@@ -164,7 +175,7 @@ export default function PollVotePage() {
 
     const { data: votesData } = await supabase
       .from('votes')
-      .select('option_id, voter_name, is_not_available')
+      .select('option_id, voter_name, is_not_available, comment')
       .eq('poll_id', pollData.id);
 
     const votes = votesData || [];
@@ -175,8 +186,10 @@ export default function PollVotePage() {
     const votersByOption: Record<string, string[]> = {};
     const unavailableNames: string[] = [];
     let unavailableVotes = 0;
+    const collectedComments: VoteComment[] = [];
+    const seenComments = new Set<string>();
 
-    votes.forEach((v: { option_id: string | null; voter_name: string | null; is_not_available: boolean | null }) => {
+    votes.forEach((v: { option_id: string | null; voter_name: string | null; is_not_available: boolean | null; comment: string | null }) => {
       if (v.is_not_available) {
         unavailableVotes += 1;
         if (v.voter_name) unavailableNames.push(v.voter_name);
@@ -187,10 +200,22 @@ export default function PollVotePage() {
         if (!votersByOption[v.option_id]) votersByOption[v.option_id] = [];
         if (v.voter_name) votersByOption[v.option_id].push(v.voter_name);
       }
+
+      // Collect comments, de-duplicating multi-choice rows that share the same
+      // comment (a voter creates one row per selected option).
+      const trimmed = v.comment?.trim();
+      if (trimmed) {
+        const key = `${v.voter_name ?? ''}|${trimmed}`;
+        if (!seenComments.has(key)) {
+          seenComments.add(key);
+          collectedComments.push({ name: v.voter_name, comment: trimmed });
+        }
+      }
     });
 
     setNotAvailableCount(unavailableVotes);
     setNotAvailableVoterNames(unavailableNames);
+    setComments(collectedComments);
 
     const resultsData: VoteResult[] = (optionsData || []).map(opt => ({
       optionId: opt.id,
@@ -248,10 +273,10 @@ export default function PollVotePage() {
         // Check logged user votes
         const { data: votes } = await supabase
           .from('votes')
-          .select('id, option_id, is_not_available')
+          .select('id, option_id, is_not_available, comment')
           .eq('poll_id', poll.id)
           .eq('user_id', currentUser.id);
-        
+
         if (votes && votes.length > 0) {
           setUserVotes(votes);
           setHasVoted(true);
@@ -260,15 +285,17 @@ export default function PollVotePage() {
           if (!isNotAvailable) {
             setSelectedOptions(votes.filter(v => v.option_id).map(v => v.option_id as string));
           }
+          const existingComment = votes.find(v => v.comment?.trim())?.comment;
+          if (existingComment) setComment(existingComment);
         }
       } else if (anonymousFingerprint) {
         // Check anonymous user votes by fingerprint
         const { data: votes } = await supabase
           .from('votes')
-          .select('id, option_id, is_not_available')
+          .select('id, option_id, is_not_available, comment')
           .eq('poll_id', poll.id)
           .eq('voter_fingerprint', anonymousFingerprint);
-        
+
         if (votes && votes.length > 0) {
           setUserVotes(votes);
           setHasVoted(true);
@@ -277,6 +304,8 @@ export default function PollVotePage() {
           if (!isNotAvailable) {
             setSelectedOptions(votes.filter(v => v.option_id).map(v => v.option_id as string));
           }
+          const existingComment = votes.find(v => v.comment?.trim())?.comment;
+          if (existingComment) setComment(existingComment);
         }
       }
     };
@@ -349,7 +378,10 @@ export default function PollVotePage() {
         user_id: string | null;
         voter_fingerprint: string | null;
         is_not_available: boolean;
+        comment: string | null;
       };
+
+      const commentToSave = poll.allow_comments ? (comment.trim() || null) : null;
 
       let voteError: { message: string } | null = null;
 
@@ -364,6 +396,7 @@ export default function PollVotePage() {
             user_id: currentUser?.id || null,
             voter_fingerprint: currentUser ? null : anonymousFingerprint,
             is_not_available: true,
+            comment: commentToSave,
           }] as unknown as VoteInsertPayload[]);
         voteError = error;
       } else {
@@ -375,6 +408,7 @@ export default function PollVotePage() {
           user_id: currentUser?.id || null,
           voter_fingerprint: currentUser ? null : anonymousFingerprint,
           is_not_available: false,
+          comment: commentToSave,
         }));
 
         const { error } = await supabase
@@ -447,6 +481,7 @@ export default function PollVotePage() {
       setUserVotes([]);
       setHasVoted(false);
       setSelectedOptions([]);
+      setComment('');
       toast.success(t('poll.vote.voteDeleted') || 'Vote deleted');
       await fetchPollData();
     } catch (err) {
@@ -509,7 +544,10 @@ export default function PollVotePage() {
         user_id: string | null;
         voter_fingerprint: string | null;
         is_not_available: boolean;
+        comment: string | null;
       };
+
+      const commentToSave = poll.allow_comments ? (comment.trim() || null) : null;
 
       let voteError: { message: string } | null = null;
 
@@ -524,6 +562,7 @@ export default function PollVotePage() {
             user_id: currentUser?.id || null,
             voter_fingerprint: currentUser ? null : anonymousFingerprint,
             is_not_available: true,
+            comment: commentToSave,
           }] as unknown as VoteInsertPayload[]);
         voteError = error;
       } else {
@@ -535,6 +574,7 @@ export default function PollVotePage() {
           user_id: currentUser?.id || null,
           voter_fingerprint: currentUser ? null : anonymousFingerprint,
           is_not_available: false,
+          comment: commentToSave,
         }));
 
         const { error } = await supabase
@@ -808,8 +848,8 @@ export default function PollVotePage() {
                     </div>
                   )}
                   
-                  {/* Not Available option - only for calendar polls */}
-                  {poll.poll_type === 'calendar' && (
+                  {/* Not Available option - only for calendar polls when enabled */}
+                  {poll.poll_type === 'calendar' && poll.allow_not_available && (
                     <div
                       className={cn(
                         'flex items-center justify-between rounded-lg border-2 border-dashed p-4 mt-4 transition-all cursor-pointer',
@@ -860,6 +900,24 @@ export default function PollVotePage() {
                       {t('poll.results.totalVotes', { count: totalVotes })}
                     </p>
                   )}
+                </div>
+              )}
+
+              {/* Optional comment field */}
+              {poll.allow_comments && (!hasVoted || isEditing) && (
+                <div className="space-y-2">
+                  <Label htmlFor="voteComment" className="flex items-center gap-2 text-base font-semibold">
+                    <MessageSquare className="h-4 w-4" />
+                    {t('poll.vote.commentOptional')}
+                  </Label>
+                  <Textarea
+                    id="voteComment"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder={t('poll.vote.commentPlaceholder')}
+                    maxLength={500}
+                    rows={3}
+                  />
                 </div>
               )}
 
@@ -972,6 +1030,26 @@ export default function PollVotePage() {
                       )}
                     </CollapsibleContent>
                   </Collapsible>
+
+                  {/* Comments */}
+                  {poll.allow_comments && comments.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-base font-semibold">
+                        <MessageSquare className="h-5 w-5" />
+                        {t('poll.results.comments')} ({comments.length})
+                      </div>
+                      <div className="space-y-2">
+                        {comments.map((c, idx) => (
+                          <div key={idx} className="mc-slot p-3">
+                            <p className="text-sm font-medium text-[#3A6E24] dark:text-[#3DCC4A]">
+                              {c.name || t('poll.results.anonymous')}
+                            </p>
+                            <p className="text-sm text-foreground/90 whitespace-pre-wrap break-words">{c.comment}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1084,6 +1162,26 @@ export default function PollVotePage() {
                       )}
                     </CollapsibleContent>
                   </Collapsible>
+
+                  {/* Comments */}
+                  {poll.allow_comments && comments.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-base font-semibold">
+                        <MessageSquare className="h-5 w-5" />
+                        {t('poll.results.comments')} ({comments.length})
+                      </div>
+                      <div className="space-y-2">
+                        {comments.map((c, idx) => (
+                          <div key={idx} className="mc-slot p-3">
+                            <p className="text-sm font-medium text-[#3A6E24] dark:text-[#3DCC4A]">
+                              {c.name || t('poll.results.anonymous')}
+                            </p>
+                            <p className="text-sm text-foreground/90 whitespace-pre-wrap break-words">{c.comment}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

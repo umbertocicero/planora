@@ -142,6 +142,10 @@
       "setExpiration": "Set expiration date",
       "requireName": "Require participant name",
       "showResultsBeforeVote": "Show results before voting",
+      "allowNotAvailable": "Allow \"not available\" option",
+      "allowNotAvailableHint": "Lets participants say none of the dates work for them",
+      "allowComments": "Allow comments on votes",
+      "allowCommentsHint": "Lets participants leave an optional comment with their vote",
       "createPoll": "Create Poll",
       "creating": "Creating...",
       "pollCreated": "Poll created successfully!",
@@ -171,6 +175,9 @@
       "voteDeleted": "Your vote has been deleted",
       "voteModified": "Your vote has been updated",
       "yourVote": "Your vote",
+      "comment": "Comment",
+      "commentOptional": "Comment (optional)",
+      "commentPlaceholder": "Add a comment to your vote...",
       "modifyVote": "Modify vote",
       "deleteVote": "Delete vote",
       "saveChanges": "Save changes",
@@ -188,7 +195,9 @@
       "hideResults": "Hide Results",
       "export": "Export Results",
       "clickToExpand": "click to see who voted",
-      "hiddenVoters": "Names unavailable"
+      "hiddenVoters": "Names unavailable",
+      "comments": "Comments",
+      "anonymous": "Anonymous"
     },
     "share": {
       "title": "Share Poll",

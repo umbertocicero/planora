@@ -68,6 +68,8 @@ const createPollSchema = z.object({
   allowAnonymous: z.boolean().default(true),
   requireName: z.boolean().default(true),
   showResultsBeforeVote: z.boolean().default(true),
+  allowNotAvailable: z.boolean().default(true),
+  allowComments: z.boolean().default(false),
 }).refine(
   (data) => {
     if (data.pollType === 'calendar') {
@@ -132,6 +134,8 @@ export default function CreatePollPage() {
       allowAnonymous: true,
       requireName: true,
       showResultsBeforeVote: true,
+      allowNotAvailable: true,
+      allowComments: false,
     },
   });
 
@@ -169,6 +173,8 @@ export default function CreatePollPage() {
           allow_anonymous: data.allowAnonymous,
           require_name: data.requireName,
           show_results_before_vote: data.showResultsBeforeVote,
+          allow_not_available: data.pollType === 'calendar' ? data.allowNotAvailable : true,
+          allow_comments: data.allowComments,
           status: 'active',
         })
         .select()
@@ -450,6 +456,48 @@ export default function CreatePollPage() {
                   <Label htmlFor="showResultsBeforeVote">
                     {t('showResultsBeforeVote')}
                   </Label>
+                </div>
+
+                {/* Calendar-only: allow the "not available" vote option */}
+                {isCalendar && (
+                  <div className="flex items-start space-x-2">
+                    <Controller
+                      name="allowNotAvailable"
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox
+                          id="allowNotAvailable"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="mt-0.5"
+                        />
+                      )}
+                    />
+                    <div className="space-y-0.5">
+                      <Label htmlFor="allowNotAvailable">{t('allowNotAvailable')}</Label>
+                      <p className="text-xs text-muted-foreground">{t('allowNotAvailableHint')}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Allow voters to leave a comment */}
+                <div className="flex items-start space-x-2">
+                  <Controller
+                    name="allowComments"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        id="allowComments"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="mt-0.5"
+                      />
+                    )}
+                  />
+                  <div className="space-y-0.5">
+                    <Label htmlFor="allowComments">{t('allowComments')}</Label>
+                    <p className="text-xs text-muted-foreground">{t('allowCommentsHint')}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
