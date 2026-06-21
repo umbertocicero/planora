@@ -582,6 +582,7 @@ I contributi sono benvenuti!
 - [x] Flag per scegliere di votare la non disponibilità in una data
 - [x] Flag Commenti al voto
 - [ ] Aggiungere numero di versione del software nel footer
+- [ ] anima il pollo se toccato (es. volano piume)
 
 ### v1.2 (Pianificato) 📋
 - [ ] Integrazione Google Calendar

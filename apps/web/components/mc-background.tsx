@@ -362,9 +362,9 @@ export function McBackground({ className = '' }: { className?: string }) {
 
         <rect width="480" height="270" fill="url(#mcSkyGrad)" />
 
-        {/* ── Aurora borealis (night) — hidden on mobile for performance ── */}
+        {/* ── Aurora borealis (night) ── */}
         {night && (
-          <g className="hidden sm:block">
+          <g>
             {auroraBars.map((b) => (
               <rect
                 key={`au${b.key}`}
