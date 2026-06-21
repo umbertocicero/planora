@@ -54,12 +54,7 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-50 w-full"
-      style={{
-        background: '#3B3B3B',
-        borderBottom: '3px solid rgba(0,0,0,0.7)',
-        boxShadow: '0 3px 0 rgba(255,255,255,0.08)',
-      }}
+      className="sticky top-0 z-50 w-full bg-white dark:bg-[#3B3B3B] border-b-[3px] border-black/10 dark:border-black/70 shadow-sm dark:shadow-[0_3px_0_rgba(255,255,255,0.08)]"
     >
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo — grass-block style */}
@@ -76,20 +71,20 @@ export function Header() {
           >
             P
           </div>
-          <span className="font-press text-sm text-[#FCEE4B] hidden sm:block">Planora</span>
+          <span className="font-press text-sm text-[#5D8A3A] dark:text-[#FCEE4B] hidden sm:block">Planora</span>
         </Link>
 
         {/* Desktop nav links */}
         <div className="hidden items-center gap-6 md:flex">
           <Link
             href="/polls/create"
-            className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A] transition-colors duration-100"
+            className="font-pixel text-sm text-[#4A4A4A] dark:text-[#C6C6C6] hover:text-[#5D8A3A] dark:hover:text-[#3DCC4A] transition-colors duration-100"
           >
             {t('createPoll')}
           </Link>
           <Link
             href="/dashboard"
-            className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A] transition-colors duration-100"
+            className="font-pixel text-sm text-[#4A4A4A] dark:text-[#C6C6C6] hover:text-[#5D8A3A] dark:hover:text-[#3DCC4A] transition-colors duration-100"
           >
             {t('dashboard')}
           </Link>
@@ -101,11 +96,11 @@ export function Header() {
           <ThemeToggle />
 
           {loading ? (
-            <div className="h-8 w-20 animate-pulse bg-[#4A4A4A]" />
+            <div className="h-8 w-20 animate-pulse bg-muted" />
           ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2 text-[#C6C6C6] hover:text-white">
+                <Button variant="ghost" size="sm" className="gap-2 text-[#4A4A4A] dark:text-[#C6C6C6] hover:text-foreground">
                   <User className="h-4 w-4" />
                   <span className="max-w-[120px] truncate font-pixel text-xs">
                     {getUserDisplayName()}
@@ -114,18 +109,17 @@ export function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-56 font-pixel text-xs"
-                style={{ background: '#3B3B3B', border: '2px solid #222' }}
+                className="w-56 font-pixel text-xs mc-panel"
               >
-                <div className="px-2 py-1.5 text-xs text-[#888]">{user.email}</div>
-                <DropdownMenuSeparator style={{ background: '#555' }} />
+                <div className="px-2 py-1.5 text-xs text-muted-foreground">{user.email}</div>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="cursor-pointer text-[#C6C6C6] hover:text-white">
+                  <Link href="/dashboard" className="cursor-pointer text-foreground/80 hover:text-foreground">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     {t('dashboard')}
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator style={{ background: '#555' }} />
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleLogout}
                   className="cursor-pointer text-[#B02E26] hover:text-red-400"
@@ -140,7 +134,7 @@ export function Header() {
               <Button asChild variant="ghost" size="sm" className="text-[#C6C6C6]">
                 <Link href="/login">{t('login')}</Link>
               </Button>
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="bg-[#5D8A3A] text-white">
                 <Link href="/signup">{t('signup')}</Link>
               </Button>
             </>
@@ -149,7 +143,7 @@ export function Header() {
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden text-[#C6C6C6] hover:text-white transition-colors"
+          className="md:hidden text-foreground/70 hover:text-foreground transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -159,23 +153,19 @@ export function Header() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div
-          className="px-4 py-4 md:hidden"
-          style={{
-            background: '#2A2A2A',
-            borderBottom: '3px solid rgba(0,0,0,0.7)',
-          }}
+          className="px-4 py-4 md:hidden bg-white dark:bg-[#2A2A2A] border-b-[3px] border-black/10 dark:border-black/70"
         >
           <div className="flex flex-col gap-4">
             <Link
               href="/polls/create"
-              className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A]"
+              className="font-pixel text-sm text-foreground/70 hover:text-[#5D8A3A] dark:hover:text-[#3DCC4A]"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('createPoll')}
             </Link>
             <Link
               href="/dashboard"
-              className="font-pixel text-sm text-[#C6C6C6] hover:text-[#3DCC4A]"
+              className="font-pixel text-sm text-foreground/70 hover:text-[#5D8A3A] dark:hover:text-[#3DCC4A]"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('dashboard')}
@@ -187,7 +177,7 @@ export function Header() {
 
             {user ? (
               <div className="flex flex-col gap-2 pt-2">
-                <div className="flex items-center gap-2 text-xs text-[#888] font-pixel">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-pixel">
                   <User className="h-4 w-4" />
                   <span className="truncate">{getUserDisplayName()}</span>
                 </div>

@@ -4,15 +4,15 @@
 
 @layer base {
   :root {
-    /* ── Minecraft Overworld Palette ── */
-    --background: 0 0% 78%;          /* stone #C6C6C6  */
-    --foreground: 0 0% 8%;           /* near black     */
+    /* ── Minecraft Overworld — Light ── */
+    --background: 0 0% 94%;          /* light stone #F0F0F0 */
+    --foreground: 0 0% 10%;          /* near black #1A1A1A  */
 
-    --card: 0 0% 54%;                /* mid stone #8B8B8B */
-    --card-foreground: 0 0% 95%;
+    --card: 0 0% 99%;                /* near white #FCFCFC  */
+    --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 54%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 0 0% 99%;
+    --popover-foreground: 0 0% 10%;
 
     --primary: 101 22% 38%;          /* grass green #5D8A3A */
     --primary-foreground: 0 0% 100%;
@@ -20,17 +20,17 @@
     --secondary: 25 54% 40%;         /* wood brown #9C6B30  */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 68%;
-    --muted-foreground: 0 0% 22%;
+    --muted: 0 0% 90%;               /* soft gray #E6E6E6   */
+    --muted-foreground: 0 0% 35%;    /* readable #595959    */
 
-    --accent: 128 58% 52%;           /* emerald #3DCC4A  */
+    --accent: 128 58% 52%;           /* emerald #3DCC4A     */
     --accent-foreground: 0 0% 5%;
 
-    --destructive: 3 64% 43%;        /* redstone #B02E26 */
+    --destructive: 3 64% 43%;        /* redstone #B02E26    */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
+    --border: 0 0% 78%;              /* #C7C7C7 */
+    --input: 0 0% 82%;               /* #D1D1D1 */
     --ring: 101 22% 38%;
 
     --radius: 0px;
@@ -126,26 +126,34 @@
 
   /* ── Minecraft Panel / Card ── */
   .mc-panel {
-    background-color: #8B8B8B;
-    border-top: 3px solid rgba(255, 255, 255, 0.6);
-    border-left: 3px solid rgba(255, 255, 255, 0.6);
-    border-bottom: 3px solid rgba(0, 0, 0, 0.55);
-    border-right: 3px solid rgba(0, 0, 0, 0.55);
+    background-color: #FCFCFC;
+    border-top: 3px solid rgba(255, 255, 255, 0.8);
+    border-left: 3px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.18);
+    border-right: 3px solid rgba(0, 0, 0, 0.18);
   }
   .dark .mc-panel {
     background-color: #3B3B3B;
+    border-top-color: rgba(255, 255, 255, 0.6);
+    border-left-color: rgba(255, 255, 255, 0.6);
+    border-bottom-color: rgba(0, 0, 0, 0.55);
+    border-right-color: rgba(0, 0, 0, 0.55);
   }
 
   /* ── Inventory Slot (inset square container) ── */
   .mc-slot {
-    background-color: #6B6B6B;
-    border-top: 3px solid rgba(0, 0, 0, 0.55);
-    border-left: 3px solid rgba(0, 0, 0, 0.55);
-    border-bottom: 3px solid rgba(255, 255, 255, 0.5);
-    border-right: 3px solid rgba(255, 255, 255, 0.5);
+    background-color: #E6E6E6;
+    border-top: 3px solid rgba(0, 0, 0, 0.15);
+    border-left: 3px solid rgba(0, 0, 0, 0.15);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.8);
+    border-right: 3px solid rgba(255, 255, 255, 0.8);
   }
   .dark .mc-slot {
     background-color: #2A2A2A;
+    border-top-color: rgba(0, 0, 0, 0.55);
+    border-left-color: rgba(0, 0, 0, 0.55);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+    border-right-color: rgba(255, 255, 255, 0.5);
   }
 
   /* ── Press Start 2P: reserved for hero/page titles ── */
