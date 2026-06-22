@@ -33,6 +33,7 @@ const OBS_SIZES: [number, number][] = [[36, 42], [36, 78], [72, 42], [30, 60]];
 type GameState = 'idle' | 'playing' | 'dead';
 interface Obs { id: number; x: number; w: number; h: number; type: number; passed: boolean }
 interface CloudDef { x: number; y: number; w: number }
+interface Feather { x: number; y: number; vx: number; vy: number; angle: number; vAngle: number; color: string }
 
 /* ── Drawing helpers ──────────────────────────────────────────────── */
 function fr(ctx: CanvasRenderingContext2D, color: string, x: number, y: number, w: number, h: number) {
@@ -198,11 +199,15 @@ export function ChickenGame({ label }: { label?: string }) {
   const scoreRef   = useRef(0);
   const legRef     = useRef(0);
   const legDirRef  = useRef(1);
-  const hiRef      = useRef(0);
-  const cloudsRef  = useRef<CloudDef[]>([]);
+  const hiRef           = useRef(0);
+  const cloudsRef       = useRef<CloudDef[]>([]);
+  const feathersRef     = useRef<Feather[]>([]);
+  const spawnFeathers   = useRef(false);
 
   const die = useCallback(() => {
-    stateRef.current = 'dead';
+    stateRef.current  = 'dead';
+    legRef.current    = 0;      // freeze legs in neutral position
+    spawnFeathers.current = true;
     const s = scoreRef.current;
     if (s > hiRef.current) hiRef.current = s;
     setFinalScore(s);
@@ -216,6 +221,7 @@ export function ChickenGame({ label }: { label?: string }) {
     onGndRef.current   = true;
     spdRef.current     = SPD_INIT;
     obsRef.current     = [];
+    feathersRef.current = [];
     nextObsRef.current = 1.8;
     scoreRef.current   = 0;
     lastTsRef.current  = null;
@@ -349,14 +355,49 @@ export function ChickenGame({ label }: { label?: string }) {
             break;
           }
         }
-      } else {
-        // Idle / dead: gentle leg sway
+
+        // Spawn feather burst on the frame death is detected
+        if (spawnFeathers.current) {
+          spawnFeathers.current = false;
+          const deathY = GY + jumpOffRef.current;
+          feathersRef.current = Array.from({ length: 8 }, () => ({
+            x: CHK_X + (Math.random() * 22 - 8),
+            y: deathY - 12 - Math.random() * 18,
+            vx: (Math.random() - 0.5) * 200,
+            vy: -90 - Math.random() * 190,
+            angle: Math.random() * Math.PI * 2,
+            vAngle: (Math.random() - 0.5) * 14,
+            color: [C.white, C.light, C.gray][Math.floor(Math.random() * 3)],
+          }));
+        }
+      } else if (state === 'idle') {
+        // Gentle leg sway only when idle
         legRef.current += legDirRef.current * 120 * dt;
         if (Math.abs(legRef.current) > 11) legDirRef.current *= -1;
       }
+      // state === 'dead': legs stay frozen at 0
+
+      // Update feather physics (runs in all states while feathers exist)
+      for (const f of feathersRef.current) {
+        f.vy    += 520 * dt;
+        f.x     += f.vx * dt;
+        f.y     += f.vy * dt;
+        f.angle += f.vAngle * dt;
+        f.vx    *= Math.max(0, 1 - 2 * dt); // mild air resistance
+      }
+      feathersRef.current = feathersRef.current.filter(f => f.y < GH + 20);
 
       for (const obs of obsRef.current) drawObs(ctx, obs);
       drawChicken(ctx, CHK_X, GY + jumpOffRef.current, legRef.current);
+
+      // Feathers drawn on top of chicken
+      for (const f of feathersRef.current) {
+        ctx.save();
+        ctx.translate(Math.round(f.x), Math.round(f.y));
+        ctx.rotate(f.angle);
+        fr(ctx, f.color, -3, -1, 6, 2);
+        ctx.restore();
+      }
 
       // Score display with drop-shadow for readability over sky
       if (state !== 'idle') {
