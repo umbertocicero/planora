@@ -27,6 +27,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { WalkingChicken } from '@/components/walking-chicken';
+import { ChickenGame } from '@/components/chicken-game';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -667,17 +668,23 @@ export default function PollVotePage() {
 
   if (error || !poll) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex flex-1 items-center justify-center">
-          <Card className="max-w-md">
-            <CardHeader>
-              <CardTitle>{t('errors.pollNotFound')}</CardTitle>
-              <CardDescription>
-                {t('errors.pollNotFoundDescription')}
-              </CardDescription>
-            </CardHeader>
-          </Card>
+        <main className="flex-1 flex flex-col items-center justify-center gap-6 px-4 py-10">
+          <div className="text-center space-y-2">
+            <h1 className="font-press text-foreground" style={{ fontSize: 20 }}>
+              {t('errors.pollNotFound')}
+            </h1>
+            <p className="font-vt text-muted-foreground text-xl">
+              {t('errors.pollNotFoundDescription')}
+            </p>
+          </div>
+          <div className="w-full max-w-3xl">
+            <ChickenGame />
+          </div>
+          <Button asChild className="mc-btn bg-primary text-primary-foreground px-6">
+            <a href="/">← {t('common.backToHome')}</a>
+          </Button>
         </main>
         <Footer />
       </div>
