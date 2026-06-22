@@ -37,8 +37,8 @@ Grazie per il tuo interesse nel contribuire a Pollix! 🎉
 
 ```bash
 # Fork e clona
-git clone https://github.com/YOUR_USERNAME/planora.git
-cd planora
+git clone https://github.com/YOUR_USERNAME/pollix.git
+cd pollix
 
 # Installa dipendenze
 pnpm install

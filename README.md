@@ -2,8 +2,8 @@
 
 **Pollix** is a collaborative web platform for creating and managing polls, votes, and event scheduling. It simplifies organising meetings, team decisions, and availability collection.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/umbertocicero/planora)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/umbertocicero/planora)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/umbertocicero/pollix)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/umbertocicero/pollix)
 
 ---
 
@@ -146,8 +146,8 @@ No local installation required!
 
 ```bash
 # Clone the repository
-git clone https://github.com/umbertocicero/planora.git
-cd planora
+git clone https://github.com/umbertocicero/pollix.git
+cd pollix
 
 # Install pnpm (if not present)
 npm install -g pnpm
