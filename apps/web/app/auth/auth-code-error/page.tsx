@@ -33,9 +33,13 @@ function AuthCodeErrorContent() {
     setSending(true);
     try {
       const supabase = createClient();
+      const redirectBase = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email,
+        options: {
+          emailRedirectTo: `${redirectBase}/auth/callback`,
+        },
       });
       if (error) throw error;
       setSent(true);
