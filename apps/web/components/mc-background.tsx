@@ -476,8 +476,21 @@ export function McBackground({ className = '' }: { className?: string }) {
           </g>
         ) : (
           <g>
-            <rect x={274} y={36} width={52} height={52} fill="#FCEE4B" opacity={0.1}>
-              <animate attributeName="opacity" values="0.07;0.16;0.07" dur="5s" repeatCount="indefinite" />
+            {/* outer pulse ring — expands and fades */}
+            <rect x={274} y={36} width={52} height={52} fill="#FCEE4B" opacity={0}>
+              <animate attributeName="opacity" values="0;0.12;0" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="x" values="274;262;274" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="y" values="36;24;36" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="width" values="52;76;52" dur="3s" repeatCount="indefinite" />
+              <animate attributeName="height" values="52;76;52" dur="3s" repeatCount="indefinite" />
+            </rect>
+            {/* inner glow breathing */}
+            <rect x={274} y={36} width={52} height={52} fill="#FCEE4B" opacity={0.07}>
+              <animate attributeName="opacity" values="0.07;0.18;0.07" dur="5s" repeatCount="indefinite" />
+              <animate attributeName="x" values="274;270;274" dur="5s" repeatCount="indefinite" />
+              <animate attributeName="y" values="36;32;36" dur="5s" repeatCount="indefinite" />
+              <animate attributeName="width" values="52;60;52" dur="5s" repeatCount="indefinite" />
+              <animate attributeName="height" values="52;60;52" dur="5s" repeatCount="indefinite" />
             </rect>
             <rect x={286} y={48} width={28} height={28} fill="#FCEE4B" />
             <rect x={290} y={52} width={8} height={8} fill="#FFF68F" opacity={0.5} />
