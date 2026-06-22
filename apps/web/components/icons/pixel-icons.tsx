@@ -57,6 +57,76 @@ export function PixelClock({ size = 56, className }: PixelIconProps) {
   );
 }
 
+/* ── Poll-type feature icons ─────────────────────────────────────── */
+
+export function PixelVoteCheck({ size = 32, className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} className={className}
+      style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <rect x="1"  y="1"  width="14" height="14" fill="#3DCC4A"/>
+      {/* bevel highlights */}
+      <rect x="1"  y="1"  width="14" height="1"  fill="#72EF7A"/>
+      <rect x="1"  y="1"  width="1"  height="14" fill="#72EF7A"/>
+      {/* bevel shadows */}
+      <rect x="1"  y="14" width="14" height="1"  fill="#1A8A24"/>
+      <rect x="14" y="1"  width="1"  height="14" fill="#1A8A24"/>
+      {/* pixel checkmark (2×2 blocks) */}
+      <rect x="3"  y="8"  width="2"  height="2"  fill="#FFFFFF"/>
+      <rect x="5"  y="10" width="2"  height="2"  fill="#FFFFFF"/>
+      <rect x="7"  y="8"  width="2"  height="2"  fill="#FFFFFF"/>
+      <rect x="9"  y="6"  width="2"  height="2"  fill="#FFFFFF"/>
+      <rect x="11" y="4"  width="2"  height="2"  fill="#FFFFFF"/>
+    </svg>
+  );
+}
+
+export function PixelVoteMulti({ size = 32, className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} className={className}
+      style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <rect x="1"  y="1"  width="14" height="14" fill="#FCEE4B"/>
+      <rect x="1"  y="1"  width="14" height="1"  fill="#FFF88A"/>
+      <rect x="1"  y="1"  width="1"  height="14" fill="#FFF88A"/>
+      <rect x="1"  y="14" width="14" height="1"  fill="#A09010"/>
+      <rect x="14" y="1"  width="1"  height="14" fill="#A09010"/>
+      {/* 3 checklist rows: small square + bar */}
+      <rect x="3"  y="4"  width="2"  height="2"  fill="#1A1A00"/>
+      <rect x="6"  y="4"  width="7"  height="2"  fill="#1A1A00"/>
+      <rect x="3"  y="7"  width="2"  height="2"  fill="#1A1A00"/>
+      <rect x="6"  y="7"  width="7"  height="2"  fill="#1A1A00"/>
+      <rect x="3"  y="10" width="2"  height="2"  fill="#1A1A00"/>
+      <rect x="6"  y="10" width="7"  height="2"  fill="#1A1A00"/>
+    </svg>
+  );
+}
+
+export function PixelVoteCalendar({ size = 32, className }: PixelIconProps) {
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} className={className}
+      style={{ imageRendering: 'pixelated', display: 'block' }}>
+      <rect x="1"  y="3"  width="14" height="12" fill="#5DEFEA"/>
+      {/* header bar */}
+      <rect x="1"  y="3"  width="14" height="3"  fill="#1DA8A8"/>
+      {/* bevel highlights */}
+      <rect x="1"  y="3"  width="14" height="1"  fill="#9FFFF8"/>
+      <rect x="1"  y="3"  width="1"  height="12" fill="#9FFFF8"/>
+      {/* bevel shadows */}
+      <rect x="1"  y="14" width="14" height="1"  fill="#0A7070"/>
+      <rect x="14" y="3"  width="1"  height="12" fill="#0A7070"/>
+      {/* rings */}
+      <rect x="4"  y="1"  width="2"  height="4"  fill="#1DA8A8"/>
+      <rect x="10" y="1"  width="2"  height="4"  fill="#1DA8A8"/>
+      {/* calendar grid: 3×2 day cells */}
+      <rect x="2"  y="8"  width="3"  height="2"  fill="#004D4D"/>
+      <rect x="7"  y="8"  width="3"  height="2"  fill="#004D4D"/>
+      <rect x="12" y="8"  width="2"  height="2"  fill="#004D4D"/>
+      <rect x="2"  y="11" width="3"  height="2"  fill="#004D4D"/>
+      <rect x="7"  y="11" width="3"  height="2"  fill="#004D4D"/>
+      <rect x="12" y="11" width="2"  height="2"  fill="#004D4D"/>
+    </svg>
+  );
+}
+
 export function PixelErrorX({ size = 56, className }: PixelIconProps) {
   return (
     <svg

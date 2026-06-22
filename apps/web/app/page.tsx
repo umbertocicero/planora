@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { McBackground } from '@/components/mc-background';
 import { FeatureCard } from '@/components/feature-card';
-import { CheckCircle2, ListChecks, Calendar } from 'lucide-react';
+import { PixelVoteCheck, PixelVoteMulti, PixelVoteCalendar } from '@/components/icons/pixel-icons';
 
 export default function HomePage() {
   const t = useTranslations();
@@ -75,10 +75,8 @@ export default function HomePage() {
 
               {/* Slot 1 — Single Choice */}
               <FeatureCard href="/polls/create?type=single_choice">
-                <div
-                  className="mc-slot w-16 h-16 flex items-center justify-center mb-4 sm:mb-6"
-                >
-                  <CheckCircle2 className="h-8 w-8 text-[#3DCC4A]" />
+                <div className="mc-slot w-16 h-16 flex items-center justify-center mb-4 sm:mb-6">
+                  <PixelVoteCheck size={40} />
                 </div>
                 <h3 className="font-pixel text-base text-[#1E1E1E] dark:text-white mb-3">
                   {t('home.features.singleChoice.title')}
@@ -90,10 +88,8 @@ export default function HomePage() {
 
               {/* Slot 2 — Multiple Choice */}
               <FeatureCard href="/polls/create?type=multiple_choice">
-                <div
-                  className="mc-slot w-16 h-16 flex items-center justify-center mb-4 sm:mb-6"
-                >
-                  <ListChecks className="h-8 w-8 text-[#FCEE4B]" />
+                <div className="mc-slot w-16 h-16 flex items-center justify-center mb-4 sm:mb-6">
+                  <PixelVoteMulti size={40} />
                 </div>
                 <h3 className="font-pixel text-base text-[#1E1E1E] dark:text-white mb-3">
                   {t('home.features.multipleChoice.title')}
@@ -105,10 +101,8 @@ export default function HomePage() {
 
               {/* Slot 3 — Calendar */}
               <FeatureCard href="/polls/create?type=calendar">
-                <div
-                  className="mc-slot w-16 h-16 flex items-center justify-center mb-4 sm:mb-6"
-                >
-                  <Calendar className="h-8 w-8 text-[#5DEFEA]" />
+                <div className="mc-slot w-16 h-16 flex items-center justify-center mb-4 sm:mb-6">
+                  <PixelVoteCalendar size={40} />
                 </div>
                 <h3 className="font-pixel text-base text-[#1E1E1E] dark:text-white mb-3">
                   {t('home.features.calendar.title')}
