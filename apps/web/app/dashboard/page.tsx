@@ -89,17 +89,21 @@ export default function DashboardPage() {
 
     const myPollsList = myPollsData || [];
 
-    // Fetch vote counts for my polls
+    // Fetch unique voter counts for my polls
     const myPollsWithVotes: PollWithVotes[] = await Promise.all(
       myPollsList.map(async (poll) => {
-        const { count } = await supabase
+        const { data: voteRows } = await supabase
           .from('votes')
-          .select('*', { count: 'exact', head: true })
+          .select('user_id, voter_fingerprint')
           .eq('poll_id', poll.id);
+
+        const uniqueVoters = new Set(
+          (voteRows || []).map(v => v.user_id ?? v.voter_fingerprint ?? 'unknown')
+        );
 
         return {
           ...poll,
-          voteCount: count || 0,
+          voteCount: uniqueVoters.size,
         };
       })
     );
@@ -128,14 +132,18 @@ export default function DashboardPage() {
 
       const votedPollsWithVotes: PollWithVotes[] = await Promise.all(
         (votedPollsData || []).map(async (poll) => {
-          const { count } = await supabase
+          const { data: voteRows } = await supabase
             .from('votes')
-            .select('*', { count: 'exact', head: true })
+            .select('user_id, voter_fingerprint')
             .eq('poll_id', poll.id);
+
+          const uniqueVoters = new Set(
+            (voteRows || []).map(v => v.user_id ?? v.voter_fingerprint ?? 'unknown')
+          );
 
           return {
             ...poll,
-            voteCount: count || 0,
+            voteCount: uniqueVoters.size,
           };
         })
       );
@@ -293,7 +301,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  {t('stats.totalVotes')}
+                  {t('stats.totalVoters')}
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -334,7 +342,7 @@ export default function DashboardPage() {
                       <Link href={`/polls/${poll.short_id}`} className="flex-1">
                         <h3 className="font-medium">{poll.title}</h3>
                         <p className="text-sm text-muted-foreground">
-                          Created {formatDate(poll.created_at)} • {poll.voteCount} votes
+                          Created {formatDate(poll.created_at)} • {t('stats.voters', { count: poll.voteCount })}
                         </p>
                       </Link>
                       <div className="flex items-center gap-2">

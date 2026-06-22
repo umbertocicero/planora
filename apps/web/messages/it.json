@@ -226,7 +226,9 @@
     "stats": {
       "totalPolls": "Sondaggi Totali",
       "activePolls": "Sondaggi Attivi",
-      "totalVotes": "Voti Totali"
+      "totalVotes": "Voti Totali",
+      "totalVoters": "Votanti Totali",
+      "voters": "{count} votanti"
     },
     "tabs": {
       "active": "Attivi",
